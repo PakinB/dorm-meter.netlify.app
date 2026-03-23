@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRates } from '../hooks/useRates'
+
 const now = new Date()
 
 function SummaryPage() {
@@ -103,19 +104,19 @@ function SummaryPage() {
                 <select
                     value={month}
                     onChange={(e) => setMonth(+e.target.value)}
-                    className="border rounded px-2 py-1 text-sm"
+                    className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400"
                 >
-                    {Array.from({ length: 12 }, (_, i) => (
-                        <option key={i + 1} value={i + 1}>เดือน {i + 1}</option>
-                    ))}
+                    {['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
+                        .map((name, i) => (
+                            <option key={i + 1} value={i + 1}>{name}</option>
+                        ))
+                    }
                 </select>
 
-                <select
-                    value={year}
-                    onChange={(e) => setYear(+e.target.value)}
-                    className="border rounded px-2 py-1 text-sm"
-                >
-                    {[2024, 2025, 2026].map((y) => (
+                <select value={year} onChange={(e) => setYear(+e.target.value)}
+                    className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400">
+                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}
                 </select>
@@ -123,7 +124,7 @@ function SummaryPage() {
                     onClick={exportCSV}
                     className="ml-auto text-sm px-3 py-1 border rounded-lg hover:bg-gray-50"
                 >
-                    Export CSV ↓
+                    ดาว์นโหลด Excel ↓
                 </button>
             </div>
 

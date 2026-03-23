@@ -42,7 +42,7 @@ function EntryPage() {
                 </select>
                 <select value={year} onChange={(e) => setYear(+e.target.value)}
                     className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400">
-                    {[2024, 2025, 2026].map((y) => (
+                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i).map((y) => (
                         <option key={y} value={y}>{y}</option>
                     ))}
                 </select>

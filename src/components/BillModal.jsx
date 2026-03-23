@@ -44,8 +44,8 @@ function BillModal({ bill, info, onClose }) {
 
         <div class="sl">ค่าใช้จ่ายคงที่</div>
         <div class="row"><span>ค่าเช่าห้อง</span><span>${bill.rent.toLocaleString()} ฿</span></div>
-        ${bill.commonFee > 0 ? `<div class="row"><span>ค่าส่วนกลาง</span><span>${bill.commonFee.toLocaleString()} ฿</span></div>` : ''}
-        ${bill.parkingFee > 0 ? `<div class="row"><span>ค่าที่จอดรถ</span><span>${bill.parkingFee.toLocaleString()} ฿</span></div>` : ''}
+        <div class="row"><span>ค่าส่วนกลาง</span><span>${bill.commonFee > 0 ? bill.commonFee.toLocaleString() + ' ฿' : '—'}</span></div>
+        <div class="row"><span>ค่าที่จอดรถ</span><span>${bill.parkingFee > 0 ? bill.parkingFee.toLocaleString() + ' ฿' : '—'}</span></div>
         ${bill.extraFee > 0 ? `<div class="row"><span>ค่าอื่นๆ</span><span>${bill.extraFee.toLocaleString()} ฿</span></div>` : ''}
 
         <div class="sl">ค่าน้ำ</div>
@@ -189,11 +189,30 @@ function BillModal({ bill, info, onClose }) {
                             </span>
                         </div>
 
+                        {/* เปลี่ยนจาก conditional render เป็นแสดงทุกบรรทัดเสมอ */}
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 pt-3 pb-1">ค่าใช้จ่ายคงที่</p>
-                        <div className="flex justify-between px-4 py-1 text-sm"><span>ค่าเช่าห้อง</span><span className="font-medium">{bill.rent.toLocaleString()} ฿</span></div>
-                        {bill.commonFee > 0 && <div className="flex justify-between px-4 py-1 text-sm"><span>ค่าส่วนกลาง</span><span className="font-medium">{bill.commonFee.toLocaleString()} ฿</span></div>}
-                        {bill.parkingFee > 0 && <div className="flex justify-between px-4 py-1 text-sm"><span>ค่าที่จอดรถ</span><span className="font-medium">{bill.parkingFee.toLocaleString()} ฿</span></div>}
-                        {bill.extraFee > 0 && <div className="flex justify-between px-4 py-1 text-sm"><span>ค่าอื่นๆ</span><span className="font-medium">{bill.extraFee.toLocaleString()} ฿</span></div>}
+                        <div className="flex justify-between px-4 py-1 text-sm">
+                            <span>ค่าเช่าห้อง</span>
+                            <span className="font-medium">{bill.rent.toLocaleString()} ฿</span>
+                        </div>
+                        <div className="flex justify-between px-4 py-1 text-sm">
+                            <span>ค่าส่วนกลาง</span>
+                            <span className="font-medium">
+                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '—'}
+                            </span>
+                        </div>
+                        <div className="flex justify-between px-4 py-1 text-sm">
+                            <span>ค่าที่จอดรถ</span>
+                            <span className="font-medium">
+                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '—'}
+                            </span>
+                        </div>
+                        {bill.extraFee > 0 && (
+                            <div className="flex justify-between px-4 py-1 text-sm">
+                                <span>ค่าอื่นๆ</span>
+                                <span className="font-medium">{bill.extraFee.toLocaleString()} ฿</span>
+                            </div>
+                        )}
 
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 pt-2 pb-1">ค่าน้ำ</p>
                         <div className="flex justify-between px-4 py-1 text-sm">
