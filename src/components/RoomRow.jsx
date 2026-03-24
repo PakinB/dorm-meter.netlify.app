@@ -11,6 +11,12 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
     const [newWater, setNewWater] = useState('')
     const [newElec, setNewElec] = useState('')
     const [saved, setSaved] = useState(false)
+    const [toast, setToast] = useState(null)
+
+    function showToast(msg, type = 'success') {
+        setToast({ msg, type })
+        setTimeout(() => setToast(null), 2500)
+    }
 
 
     useEffect(() => { fetchMeterData() }, [month, year])
@@ -87,10 +93,16 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                 room_id: roomId,
                 month,
                 year,
-                water_meter: newWater,
-                elec_meter: newElec,
+                water_meter: +newWater,
+                elec_meter: +newElec,
             }, { onConflict: 'room_id,month,year' })
-        if (!error) setSaved(true)
+
+        if (!error) {
+            setSaved(true)
+            showToast(`บันทึกห้อง ${roomNumber} สำเร็จ`)
+        } else {
+            showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error')
+        }
     }
 
     const usedWater = newWater !== '' && prevWater !== ''
@@ -104,7 +116,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
         : null
 
     return (
-        // ใช้ inline style แทน dynamic Tailwind class เพื่อให้ stripe ทำงานได้แน่นอน
+
         <div
             style={{ backgroundColor: stripe ? '#eff6ff' : '#ffffff' }}
             className="grid grid-cols-6 gap-2 px-4 py-2 border-b items-center hover:bg-blue-100 transition-colors"
@@ -187,6 +199,36 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     </button>
                 )}
             </div>
+            {toast && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: '24px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    borderRadius: '999px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                    background: toast.type === 'success' ? '#1e3a8a' : '#dc2626',
+                    color: 'white',
+                    animation: 'slideUp 0.2s ease',
+                }}>
+                    {toast.type === 'success' ? '✓' : '✕'} {toast.msg}
+                </div>
+            )}
+
+            <style>{`
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+                to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+            `}</style>
         </div>
     )
 }

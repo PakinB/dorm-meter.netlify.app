@@ -50,6 +50,7 @@ function SummaryPage() {
                 rent: room.rent,
                 commonFee: room.common_fee,
                 parkingFee: room.parking_fee,
+                extraFee: room.extra_fee,
                 usedWater,
                 usedElec,
                 billWater,
@@ -130,20 +131,20 @@ function SummaryPage() {
 
             {/* metric cards */}
             <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-400 mb-1">รวมทั้งหมด</div>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                    <div className="text-xs text-slate-400 mb-1">รวมทั้งหมด</div>
                     <div className="text-lg font-medium">
                         {grandTotal.toLocaleString()} ฿
                     </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-400 mb-1">บันทึกแล้ว</div>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                    <div className="text-xs text-slate-400 mb-1">บันทึกแล้ว</div>
                     <div className="text-lg font-medium text-green-600">
                         {filledRooms}/{rows.length}
                     </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-400 mb-1">รอมิเตอร์</div>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                    <div className="text-xs text-slate-400 mb-1">รอมิเตอร์</div>
                     <div className="text-lg font-medium text-amber-500">
                         {rows.length - filledRooms}
                     </div>
@@ -156,15 +157,16 @@ function SummaryPage() {
                 <table className="w-full text-xs">
                     <thead>
                         <tr className="bg-blue-800 text-white text-xs">
-                            <th className="text-left p-2">ห้อง</th>
-                            <th className="text-right p-2">ค่าเช่า</th>
-                            <th className="text-right p-2">ส่วนกลาง</th>
-                            <th className="text-right p-2">น้ำ (หน่วย)</th>
-                            <th className="text-right p-2">ค่าน้ำ</th>
-                            <th className="text-right p-2">ไฟ (หน่วย)</th>
-                            <th className="text-right p-2">ค่าไฟ</th>
-                            <th className="text-right p-2">รวม</th>
-                            <th className="text-center p-2">สถานะ</th>
+                            <th className="text-left px-3 py-2">ห้อง</th>
+                            <th className="text-right px-3 py-2">ค่าเช่า</th>
+                            <th className="text-right px-3 py-2">ส่วนกลาง</th>
+                            <th className="text-right px-3 py-2">ที่จอดรถ</th>
+                            <th className="text-right px-3 py-2">น้ำ (หน่วย)</th>
+                            <th className="text-right px-3 py-2">ค่าน้ำ</th>
+                            <th className="text-right px-3 py-2">ไฟ (หน่วย)</th>
+                            <th className="text-right px-3 py-2">ค่าไฟ</th>
+                            <th className="text-right px-3 py-2">รวม</th>
+                            <th className="text-center px-3 py-2">สถานะ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -173,17 +175,26 @@ function SummaryPage() {
                                 style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
                                 className="border-b hover:bg-blue-100 transition-colors"
                             >
-                                <td className="p-2 font-semibold text-blue-900">{row.roomNumber}</td>
-                                <td className="p-2 text-right">{row.rent.toLocaleString()}</td>
-                                <td className="p-2 text-right">{row.commonFee.toLocaleString()}</td>
-                                <td className="p-2 text-right">{row.usedWater ?? '—'}</td>
-                                <td className="p-2 text-right">{row.billWater?.toFixed(0) ?? '—'}</td>
-                                <td className="p-2 text-right">{row.usedElec ?? '—'}</td>
-                                <td className="p-2 text-right">{row.billElec?.toFixed(0) ?? '—'}</td>
-                                <td className="p-2 text-right font-semibold text-blue-700">
-                                    {row.total ? row.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ฿' : '—'}
+                                <td className="px-3 py-2 font-semibold text-blue-900">{row.roomNumber}</td>
+                                <td className="px-3 py-2 text-right">{row.rent.toLocaleString()+ ' ฿'}</td>
+                                <td className="px-3 py-2 text-right">
+                                    {row.commonFee > 0 ? row.commonFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
                                 </td>
-                                <td className="p-2 text-center">
+                                <td className="px-3 py-2 text-right">
+                                    {row.parkingFee > 0 ? row.parkingFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                </td>
+                                <td className="px-3 py-2 text-right">{row.usedWater?.toLocaleString() ?? '0'}</td>
+                                <td className="px-3 py-2 text-right">
+                                    {row.billWater ? Math.round(row.billWater).toLocaleString()+ ' ฿' : '0'+ ' ฿' }
+                                </td>
+                                <td className="px-3 py-2 text-right">{row.usedElec?.toLocaleString() ?? '0'}</td>
+                                <td className="px-3 py-2 text-right">
+                                    {row.billElec ? Math.round(row.billElec).toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                </td>
+                                <td className="px-3 py-2 text-right font-semibold text-blue-700">
+                                    {row.total ? Math.round(row.total).toLocaleString() + ' ฿' : '0'+ ' ฿'}
+                                </td>
+                                <td className="px-3 py-2 text-center">
                                     {row.total !== null
                                         ? <span className="bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">ครบ</span>
                                         : <span className="bg-amber-50 text-amber-500 px-2 py-0.5 rounded-full text-xs font-medium">รอ</span>

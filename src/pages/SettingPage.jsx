@@ -3,19 +3,25 @@ import { supabase } from '../lib/supabase'
 
 function SettingsPage() {
   const [rates, setRates] = useState({ waterRate: 18, elecRate: 8 })
-  const [info,  setInfo]  = useState({
+  const [info, setInfo] = useState({
     dorm_name: '', dorm_address: '',
     bank_name: '', bank_number: '', bank_account: '', promptpay: ''
   })
   const [loading, setLoading] = useState(true)
-  const [saving,  setSaving]  = useState(false)
-  const [msg,     setMsg]     = useState('')
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [toast, setToast] = useState(null)
+
+  function showToast(msg, type = 'success') {
+    setToast({ msg, type })
+    setTimeout(() => setToast(null), 2500)
+  }
 
   useEffect(() => { fetchAll() }, [])
 
   async function fetchAll() {
     const { data: rateData } = await supabase.from('settings').select('*')
-    const { data: infoData  } = await supabase.from('settings_text').select('*')
+    const { data: infoData } = await supabase.from('settings_text').select('*')
 
     if (rateData) {
       const w = rateData.find((r) => r.key === 'water_rate')
@@ -32,18 +38,18 @@ function SettingsPage() {
 
   async function save() {
     setSaving(true)
-    await supabase.from('settings')
-      .upsert({ key: 'water_rate', value: rates.waterRate }, { onConflict: 'key' })
-    await supabase.from('settings')
-      .upsert({ key: 'elec_rate',  value: rates.elecRate  }, { onConflict: 'key' })
+    const { error: e1 } = await supabase.from('settings')
+      .upsert({ key: 'water_rate', value: waterRate }, { onConflict: 'key' })
+    const { error: e2 } = await supabase.from('settings')
+      .upsert({ key: 'elec_rate', value: elecRate }, { onConflict: 'key' })
 
     for (const [key, value] of Object.entries(info)) {
       await supabase.from('settings_text')
         .upsert({ key, value }, { onConflict: 'key' })
     }
+
     setSaving(false)
-    setMsg('บันทึกแล้ว ✓')
-    setTimeout(() => setMsg(''), 2000)
+    showToast(e1 || e2 ? 'เกิดข้อผิดพลาด กรุณาลองใหม่' : 'บันทึกการตั้งค่าสำเร็จ', e1 || e2 ? 'error' : 'success')
   }
 
   if (loading) return <div className="text-sm text-slate-400 py-8 text-center">กำลังโหลด...</div>
@@ -79,12 +85,12 @@ function SettingsPage() {
         </div>
         <div className="px-5 py-4 space-y-3">
           {[
-            { key: 'dorm_name',    label: 'ชื่อหอพัก' },
+            { key: 'dorm_name', label: 'ชื่อหอพัก' },
             { key: 'dorm_address', label: 'ที่อยู่' },
-            { key: 'bank_name',    label: 'ชื่อธนาคาร' },
-            { key: 'bank_number',  label: 'เลขบัญชี' },
+            { key: 'bank_name', label: 'ชื่อธนาคาร' },
+            { key: 'bank_number', label: 'เลขบัญชี' },
             { key: 'bank_account', label: 'ชื่อบัญชี' },
-            { key: 'promptpay',    label: 'เบอร์ PromptPay' },
+            { key: 'promptpay', label: 'เบอร์ PromptPay' },
           ].map(({ key, label }) => (
             <div key={key}>
               <label className="text-xs text-slate-500 block mb-1">{label}</label>
@@ -103,6 +109,26 @@ function SettingsPage() {
         </button>
         {msg && <span className="text-green-600 text-sm font-medium">{msg}</span>}
       </div>
+      {toast && (
+        <div style={{
+          position: 'fixed', bottom: '24px', left: '50%',
+          transform: 'translateX(-50%)', zIndex: 9999,
+          display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '10px 20px', borderRadius: '999px',
+          fontSize: '14px', fontWeight: '500',
+          whiteSpace: 'nowrap', boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          background: toast.type === 'success' ? '#1e3a8a' : '#dc2626',
+          color: 'white', animation: 'slideUp 0.2s ease',
+        }}>
+          {toast.type === 'success' ? '✓' : '✕'} {toast.msg}
+        </div>
+      )}
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
     </div>
   )
 }

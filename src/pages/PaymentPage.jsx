@@ -83,7 +83,7 @@ function PaymentPage() {
                 hasMeter: cur !== undefined,
                 paid: pay?.paid ?? false,
                 paidAt: pay?.paid_at ?? null,
-                note: pay?.note ?? '',
+                note: room.note ?? '',
                 prevWater: prev?.water_meter ?? null,
                 newWater: cur?.water_meter ?? null,
                 prevElec: prev?.elec_meter ?? null,
@@ -120,12 +120,10 @@ function PaymentPage() {
     }
 
     async function saveNote(row, note) {
-        await supabase.from('payments').upsert({
-            room_id: row.roomId,
-            month, year,
-            paid: row.paid,
-            note,
-        }, { onConflict: 'room_id,month,year' })
+        await supabase
+            .from('rooms')
+            .update({ note })
+            .eq('id', row.roomId)
     }
 
     // 3. openBill

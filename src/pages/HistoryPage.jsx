@@ -33,6 +33,12 @@ function HistoryPage() {
     async function fetchHistory() {
         setLoading(true)
 
+        const { data: roomData } = await supabase
+            .from('rooms')
+            .select('rent, common_fee, parking_fee, extra_fee')
+            .eq('id', roomId)
+            .maybeSingle()
+
         const { data } = await supabase
             .from('meter_readings')
             .select('*')
@@ -42,24 +48,75 @@ function HistoryPage() {
 
         if (!data?.length) { setRows([]); setLoading(false); return }
 
+        const { data: payments } = await supabase
+            .from('payments')
+            .select('month, year, paid, paid_at')
+            .eq('room_id', roomId)
 
-        const result = data.map((cur, i) => {
+        const result = await Promise.all(data.map(async (cur) => {
+            const prevMonth = cur.month === 1 ? 12 : cur.month - 1
+            const prevYear = cur.month === 1 ? cur.year - 1 : cur.year
 
-            const prev = data[i + 1] ?? null
+            // ดึงเดือนก่อนตรงๆ ก่อน
+            const { data: prevData } = await supabase
+                .from('meter_readings')
+                .select('water_meter, elec_meter')
+                .eq('room_id', roomId)
+                .eq('month', prevMonth)
+                .eq('year', prevYear)
+                .maybeSingle()
+
+            // ถ้าไม่มีเดือนก่อน หาข้อมูลล่าสุดที่มีก่อนเดือนนี้
+            let prev = prevData
+            if (!prev) {
+                const { data: sameYear } = await supabase
+                    .from('meter_readings')
+                    .select('water_meter, elec_meter')
+                    .eq('room_id', roomId)
+                    .eq('year', cur.year)
+                    .lt('month', cur.month)
+                    .order('month', { ascending: false })
+                    .limit(1)
+                    .maybeSingle()
+
+                const { data: prevYear2 } = await supabase
+                    .from('meter_readings')
+                    .select('water_meter, elec_meter')
+                    .eq('room_id', roomId)
+                    .lt('year', cur.year)
+                    .order('year', { ascending: false })
+                    .order('month', { ascending: false })
+                    .limit(1)
+                    .maybeSingle()
+
+                prev = sameYear ?? prevYear2
+            }
 
             const usedWater = prev ? Math.max(0, cur.water_meter - prev.water_meter) : null
             const usedElec = prev ? Math.max(0, cur.elec_meter - prev.elec_meter) : null
             const billWater = usedWater !== null ? usedWater * waterRate : null
             const billElec = usedElec !== null ? usedElec * elecRate : null
-            const total = billWater !== null ? billWater + billElec : null
+            const fixed = roomData
+                ? roomData.rent + roomData.common_fee + roomData.parking_fee + roomData.extra_fee
+                : 0
+            const total = billWater !== null ? fixed + billWater + billElec : fixed
+
+            const pay = payments?.find((p) => p.month === cur.month && p.year === cur.year)
 
             return {
                 month: cur.month, year: cur.year,
                 waterMeter: cur.water_meter,
                 elecMeter: cur.elec_meter,
-                usedWater, usedElec, billWater, billElec, total,
+                usedWater, usedElec, billWater, billElec,
+                total,
+                hasFullData: billWater !== null,
+                rent: roomData?.rent ?? 0,
+                commonFee: roomData?.common_fee ?? 0,
+                parkingFee: roomData?.parking_fee ?? 0,
+                paid: pay?.paid ?? false,
+                paidAt: pay?.paid_at ?? null,
             }
-        })
+        }))
 
         setRows(result)
         setLoading(false)
@@ -111,14 +168,18 @@ function HistoryPage() {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-blue-800 text-white text-xs">
-                                    <th className="text-left px-4 py-2">เดือน</th>
-                                    <th className="text-right px-4 py-2">มิเตอร์น้ำ</th>
-                                    <th className="text-right px-4 py-2">น้ำ (หน่วย)</th>
-                                    <th className="text-right px-4 py-2">ค่าน้ำ</th>
-                                    <th className="text-right px-4 py-2">มิเตอร์ไฟ</th>
-                                    <th className="text-right px-4 py-2">ไฟ (หน่วย)</th>
-                                    <th className="text-right px-4 py-2">ค่าไฟ</th>
-                                    <th className="text-right px-4 py-2">รวม</th>
+                                    <th className="text-left px-3 py-2">เดือน</th>
+                                    <th className="text-right px-3 py-2">ค่าเช่า</th>
+                                    <th className="text-right px-3 py-2">ส่วนกลาง</th>
+                                    <th className="text-right px-3 py-2">ที่จอดรถ</th>
+                                    <th className="text-right px-3 py-2">มิเตอร์น้ำ</th>
+                                    <th className="text-right px-3 py-2">น้ำ (หน่วย)</th>
+                                    <th className="text-right px-3 py-2">ค่าน้ำ</th>
+                                    <th className="text-right px-3 py-2">มิเตอร์ไฟ</th>
+                                    <th className="text-right px-3 py-2">ไฟ (หน่วย)</th>
+                                    <th className="text-right px-3 py-2">ค่าไฟ</th>
+                                    <th className="text-right px-3 py-2">รวม</th>
+                                    <th className="text-center px-3 py-2">สถานะ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,29 +188,56 @@ function HistoryPage() {
                                         style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
                                         className="border-b hover:bg-blue-100 transition-colors"
                                     >
-                                        <td className="px-4 py-2 font-semibold text-blue-900">
+                                        <td className="px-3 py-2 font-semibold text-blue-900 whitespace-nowrap">
                                             {MONTHS[row.month - 1]} {row.year}
                                         </td>
-                                        <td className="px-4 py-2 text-right text-slate-500">
-                                            {row.waterMeter?.toLocaleString() ?? '—'}
+                                        <td className="px-3 py-2 text-right">{row.rent.toLocaleString()+ ' ฿'}</td>
+                                        <td className="px-3 py-2 text-right">
+                                            {row.commonFee > 0 ? row.commonFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
                                         </td>
-                                        <td className="px-4 py-2 text-right">
-                                            {row.usedWater?.toLocaleString() ?? '—'}
+                                        <td className="px-3 py-2 text-right">
+                                            {row.parkingFee > 0 ? row.parkingFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
                                         </td>
-                                        <td className="px-4 py-2 text-right">
-                                            {row.billWater ? Math.round(row.billWater).toLocaleString() : '—'}
+                                        <td className="px-3 py-2 text-right text-slate-500">
+                                            {row.waterMeter?.toLocaleString() ?? '0'}
                                         </td>
-                                        <td className="px-4 py-2 text-right text-slate-500">
-                                            {row.elecMeter?.toLocaleString() ?? '—'}
+                                        <td className="px-3 py-2 text-right">
+                                            {row.usedWater?.toLocaleString() ?? '0'}
                                         </td>
-                                        <td className="px-4 py-2 text-right">
-                                            {row.usedElec?.toLocaleString() ?? '—'}
+                                        <td className="px-3 py-2 text-right">
+                                            {row.billWater ? Math.round(row.billWater).toLocaleString()+ ' ฿' : '0'+ ' ฿'}
                                         </td>
-                                        <td className="px-4 py-2 text-right">
-                                            {row.billElec ? Math.round(row.billElec).toLocaleString() : '—'}
+                                        <td className="px-3 py-2 text-right text-slate-500">
+                                            {row.elecMeter?.toLocaleString() ?? '0'}
                                         </td>
-                                        <td className="px-4 py-2 text-right font-semibold text-blue-700">
-                                            {row.total ? Math.round(row.total).toLocaleString() : '—'}
+                                        <td className="px-3 py-2 text-right">
+                                            {row.usedElec?.toLocaleString() ?? '0'}
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            {row.billElec ? Math.round(row.billElec).toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                        </td>
+                                        <td className="px-3 py-2 text-right font-semibold text-blue-700">
+                                            {row.total ? Math.round(row.total).toLocaleString() + ' ฿' : '0'}
+                                        </td>
+                                        <td className="px-3 py-2 text-center">
+                                            {row.paid ? (
+                                                <div>
+                                                    <span className="bg-green-50 text-green-700 border border-green-300 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
+                                                        ✓ จ่ายแล้ว
+                                                    </span>
+                                                    {row.paidAt && (
+                                                        <div className="text-xs text-slate-400 mt-1 whitespace-nowrap">
+                                                            {new Date(row.paidAt).toLocaleDateString('th-TH', {
+                                                                day: 'numeric', month: 'short', year: '2-digit'
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="bg-amber-50 text-amber-500 border border-amber-200 px-2 py-0.5 rounded-full text-xs font-medium">
+                                                    ยังไม่จ่าย
+                                                </span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
