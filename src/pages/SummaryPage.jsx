@@ -161,9 +161,9 @@ function SummaryPage() {
                             <th className="text-right px-3 py-2">ค่าเช่า</th>
                             <th className="text-right px-3 py-2">ส่วนกลาง</th>
                             <th className="text-right px-3 py-2">ที่จอดรถ</th>
-                            <th className="text-right px-3 py-2">น้ำ (หน่วย)</th>
+                            <th className="text-right px-3 py-2">น้ำ (หน่วยใช้)</th>
                             <th className="text-right px-3 py-2">ค่าน้ำ</th>
-                            <th className="text-right px-3 py-2">ไฟ (หน่วย)</th>
+                            <th className="text-right px-3 py-2">ไฟ (หน่วยใช้)</th>
                             <th className="text-right px-3 py-2">ค่าไฟ</th>
                             <th className="text-right px-3 py-2">รวม</th>
                             <th className="text-center px-3 py-2">สถานะ</th>

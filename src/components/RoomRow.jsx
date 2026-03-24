@@ -171,8 +171,8 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                 className="border border-slate-300 rounded-md px-2 py-1 text-sm w-full bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
             />
 
-            <div className="flex items-center gap-1.5">
-                <span className={`text-sm flex-1 font-medium ${total !== null ? 'text-blue-700' : 'text-slate-300'}`}>
+            <div className="flex items-center justify-between w-full">
+                <span className={`text-sm font-medium ${total !== null ? 'text-blue-700' : 'text-slate-300'}`}>
                     {total !== null ? `${total.toLocaleString()} ฿` : '—'}
                 </span>
 

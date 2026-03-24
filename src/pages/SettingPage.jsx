@@ -90,7 +90,7 @@ function SettingsPage() {
             { key: 'bank_name', label: 'ชื่อธนาคาร' },
             { key: 'bank_number', label: 'เลขบัญชี' },
             { key: 'bank_account', label: 'ชื่อบัญชี' },
-            { key: 'promptpay', label: 'เบอร์ PromptPay' },
+            { key: 'promptpay', label: 'เบอร์พร้อมเพย์' },
           ].map(({ key, label }) => (
             <div key={key}>
               <label className="text-xs text-slate-500 block mb-1">{label}</label>

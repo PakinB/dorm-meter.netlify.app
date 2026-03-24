@@ -39,21 +39,21 @@ function BillModal({ bill, info, onClose }) {
         <div class="bm">
           <span>ห้อง <b>${bill.roomNumber}</b></span>
           <span>ประจำเดือน <b>${MONTHS[bill.month - 1]} ${bill.year}</b></span>
-          <span class="status ${bill.paid ? 'paid' : 'unpaid'}">${bill.paid ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}</span>
+          
         </div>
 
         <div class="sl">ค่าใช้จ่ายคงที่</div>
         <div class="row"><span>ค่าเช่าห้อง</span><span>${bill.rent.toLocaleString()} ฿</span></div>
-        <div class="row"><span>ค่าส่วนกลาง</span><span>${bill.commonFee > 0 ? bill.commonFee.toLocaleString() + ' ฿' : '—'}</span></div>
-        <div class="row"><span>ค่าที่จอดรถ</span><span>${bill.parkingFee > 0 ? bill.parkingFee.toLocaleString() + ' ฿' : '—'}</span></div>
+        <div class="row"><span>ค่าส่วนกลาง</span><span>${bill.commonFee > 0 ? bill.commonFee.toLocaleString() + ' ฿' : '0' + ' ฿'}</span></div>
+        <div class="row"><span>ค่าที่จอดรถ</span><span>${bill.parkingFee > 0 ? bill.parkingFee.toLocaleString() + ' ฿' : '0' + ' ฿'}</span></div>
         ${bill.extraFee > 0 ? `<div class="row"><span>ค่าอื่นๆ</span><span>${bill.extraFee.toLocaleString()} ฿</span></div>` : ''}
 
         <div class="sl">ค่าน้ำ</div>
-        <div class="row"><span>ค่าน้ำ (${bill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 18} ฿)</span><span>${bill.billWater?.toFixed(0) ?? '—'} ฿</span></div>
+        <div class="row"><span>ค่าน้ำ (${bill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 18} ฿)</span><span>${bill.billWater?.toFixed(0) ?? '0'} ฿</span></div>
         ${bill.prevWater !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevWater} → ใหม่ ${bill.newWater}</span></div>` : ''}
 
         <div class="sl">ค่าไฟ</div>
-        <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 8} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '—'} ฿</span></div>
+        <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 8} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
         ${bill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevElec} → ใหม่ ${bill.newElec}</span></div>` : ''}
 
         <div class="total"><span>รวมทั้งหมด</span><span>${bill.total.toLocaleString()} ฿</span></div>
@@ -63,12 +63,13 @@ function BillModal({ bill, info, onClose }) {
             ${info.bank_name ? `<p>ธนาคาร ${info.bank_name}</p>` : ''}
             ${info.bank_number ? `<p>เลขที่บัญชี ${info.bank_number}</p>` : ''}
             ${info.bank_account ? `<p>ชื่อบัญชี ${info.bank_account}</p>` : ''}
-            ${info.promptpay ? `<p>PromptPay: ${info.promptpay}</p>` : ''}
+            ${info.promptpay ? `<p>พร้อมเพย์: ${info.promptpay}</p>` : ''}
             </div>
           ${qrUrl ? `
           <div class="qr-wrap">
+            <p>จ่ายแบบรวดเร็ว</p>
             <img src="${qrUrl}" alt="QR PromptPay" />
-            <p>PromptPay</p>
+            <p>จ่ายพร้อมเพย์</p>
           </div>` : ''}
         </div>
       </div>
@@ -198,13 +199,13 @@ function BillModal({ bill, info, onClose }) {
                         <div className="flex justify-between px-4 py-1 text-sm">
                             <span>ค่าส่วนกลาง</span>
                             <span className="font-medium">
-                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '0'+ ' ฿' }
+                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '0' + ' ฿'}
                             </span>
                         </div>
                         <div className="flex justify-between px-4 py-1 text-sm">
                             <span>ค่าที่จอดรถ</span>
                             <span className="font-medium">
-                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '0'+ ' ฿'}
+                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '0' + ' ฿'}
                             </span>
                         </div>
                         {bill.extraFee > 0 && (
@@ -242,6 +243,7 @@ function BillModal({ bill, info, onClose }) {
                             </div>
                             {qrUrl && (
                                 <div className="text-center flex-shrink-0">
+                                    <p className="text-xs text-slate-500 mt-1 font-medium">จ่ายแบบรวดเร็ว</p>
                                     <img src={qrUrl} alt="QR PromptPay" className="w-20 h-20 border border-slate-200 rounded" />
                                     <p className="text-xs text-slate-500 mt-1 font-medium">จ่ายพร้อมเพย์</p>
                                 </div>
