@@ -168,7 +168,7 @@ function BillModal({ bill, info, onClose }) {
 
                 {/* Modal header */}
                 <div className="flex justify-between items-center px-5 py-4 border-b">
-                    <h2 className="font-semibold text-slate-700">ตัวอย่างใบบิล — ห้อง {bill.roomNumber}</h2>
+                    <h2 className="font-semibold text-slate-700">ใบบิล — ห้อง {bill.roomNumber}</h2>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl leading-none">✕</button>
                 </div>
 
@@ -184,9 +184,9 @@ function BillModal({ bill, info, onClose }) {
                         <div className="flex justify-between items-center px-4 py-2 bg-slate-50 border-b text-xs text-slate-500">
                             <span>ห้อง <span className="font-semibold text-slate-700">{bill.roomNumber}</span></span>
                             <span>ประจำเดือน <span className="font-semibold text-slate-700">{MONTHS[bill.month - 1]} {bill.year}</span></span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${bill.paid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-600'}`}>
+                            {/* <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${bill.paid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-600'}`}>
                                 {bill.paid ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}
-                            </span>
+                            </span> */}
                         </div>
 
                         {/* เปลี่ยนจาก conditional render เป็นแสดงทุกบรรทัดเสมอ */}
@@ -198,13 +198,13 @@ function BillModal({ bill, info, onClose }) {
                         <div className="flex justify-between px-4 py-1 text-sm">
                             <span>ค่าส่วนกลาง</span>
                             <span className="font-medium">
-                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '—'}
+                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '0'+ ' ฿' }
                             </span>
                         </div>
                         <div className="flex justify-between px-4 py-1 text-sm">
                             <span>ค่าที่จอดรถ</span>
                             <span className="font-medium">
-                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '—'}
+                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '0'+ ' ฿'}
                             </span>
                         </div>
                         {bill.extraFee > 0 && (

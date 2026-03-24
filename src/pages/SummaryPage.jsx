@@ -68,7 +68,7 @@ function SummaryPage() {
     const filledRooms = rows.filter((r) => r.total !== null).length
 
     if (loading) {
-        return <div className="p-4 text-sm text-gray-400">กำลังโหลด...</div>
+        return <div className="ext-sm text-slate-400 py-8 text-center">กำลังโหลด...</div>
     }
     function exportCSV() {
         const header = 'ห้อง,ค่าเช่า,ส่วนกลาง,น้ำ(หน่วย),ค่าน้ำ,ไฟ(หน่วย),ค่าไฟ,รวม'
