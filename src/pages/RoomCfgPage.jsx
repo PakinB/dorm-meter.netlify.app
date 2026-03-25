@@ -56,7 +56,7 @@ function RoomCfgPage() {
     if (loading) return <div className="text-sm text-slate-400 py-8 text-center">กำลังโหลด...</div>
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden whitespace-nowrap">
 
             {/* Card header */}
             <div className="px-5 py-4 border-b bg-slate-50 flex justify-between items-center">
@@ -72,7 +72,7 @@ function RoomCfgPage() {
 
             {/* Table */}
             <div className="overflow-x-auto">
-                <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
+                <table className="min-w-[700px] w-full text-sm">
                     <colgroup>
                         <col style={{ width: '80px' }} />
                         <col style={{ width: '130px' }} />
@@ -118,7 +118,7 @@ function RoomCfgPage() {
                                         onChange={(e) => { const r = e.target.value.replace(/,/g, ''); if (!isNaN(r)) updateRoom(room.id, 'extra_fee', r) }}
                                         className="border border-slate-300 rounded-md px-2 py-1 w-full text-right text-sm focus:outline-none focus:border-blue-400" />
                                 </td>
-                                <td className="px-4 py-2">
+                                <td className="px-4 py-2 w-[250px]">
                                     <input type="text" value={room.note ?? ''}
                                         onChange={(e) => updateRoom(room.id, 'note', e.target.value)}
                                         placeholder="หมายเหตุ"

@@ -176,8 +176,8 @@ function PaymentPage() {
             </div>
 
             {/* ตาราง */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
+            <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden whitespace-nowrap">
+                <table className="min-w-[700px] w-full text-sm">
                     <colgroup>
                         <col style={{ width: '70px' }} />
                         <col style={{ width: '120px' }} />
@@ -233,7 +233,7 @@ function PaymentPage() {
                                     <button onClick={() => togglePaid(row)}
                                         className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors w-full ${row.paid
                                             ? 'bg-green-50 text-green-700 border-green-300 hover:bg-green-100'
-                                            : 'bg-white text-slate-500 border-slate-300 hover:border-blue-400 hover:text-blue-600'
+                                            : 'bg-white text-amber-500 border-amber-300 hover:border-blue-400 hover:text-blue-600'
                                             }`}>
                                         {row.paid ? '✓ จ่ายแล้ว' : 'ยังไม่จ่าย'}
                                     </button>

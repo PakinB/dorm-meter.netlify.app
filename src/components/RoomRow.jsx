@@ -171,15 +171,15 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                 className="border border-slate-300 rounded-md px-2 py-1 text-sm w-full bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
             />
 
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2 justify-between w-full whitespace-nowrap ">
                 <span className={`text-sm font-medium ${total !== null ? 'text-blue-700' : 'text-slate-300'}`}>
                     {total !== null ? `${total.toLocaleString()} ฿` : '—'}
                 </span>
 
                 {saved ? (
                     // บันทึกแล้ว — แสดง 2 ปุ่ม
-                    <div className="flex gap-1">
-                        <span className="text-xs px-2 py-0.5 rounded-full border border-green-300 text-green-700 bg-green-50">
+                    <div className="flex flex-wrap gap-1 justify-end">
+                        <span className="text-xs px-2 py-0.5 rounded-full border border-green-300 text-green-700 bg-green-50 whitespace-nowrap">
                             บันทึกแล้ว
                         </span>
                         <button
@@ -193,7 +193,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     // ยังไม่บันทึก — แสดงปุ่มบันทึก
                     <button
                         onClick={handleSave}
-                        className="text-xs px-2.5 py-1 rounded-full border border-blue-300 text-blue-600 hover:bg-blue-50 font-medium transition-colors"
+                        className="text-xs px-2.5 py-1 rounded-full border border-blue-300 text-blue-600 hover:bg-blue-50 font-medium transition-colors whitespace-nowrap"
                     >
                         บันทึก
                     </button>

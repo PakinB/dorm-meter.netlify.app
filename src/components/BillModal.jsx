@@ -277,19 +277,21 @@ function BillModal({ bill, info, onClose }) {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 px-5 py-4 border-t">
+                <div className="flex flex-col gap-2 px-5 py-4 border-t">
                     <button onClick={handleDownloadJPG}
-                        className="flex-1 py-2 bg-blue-800 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
+                        className="w-full py-2 bg-blue-800 text-white text-sm rounded-lg font-medium">
                         ดาวน์โหลดรูปภาพ
                     </button>
-                    <button onClick={handlePrint}
-                        className="flex-1 py-2 border border-blue-800 text-blue-800 text-sm rounded-lg hover:bg-blue-50 font-medium">
-                        ปริ้นใบบิล
-                    </button>
-                    <button onClick={handlePrint}
-                        className="flex-1 py-2 bg-blue-800 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
-                        บันทึก PDF
-                    </button>
+                    <div className="flex gap-2">
+                        <button onClick={handlePrint}
+                            className="flex-1 py-2 border border-blue-800 text-blue-800 text-sm rounded-lg hover:bg-blue-50 font-medium">
+                            ปริ้นใบบิล
+                        </button>
+                        <button onClick={handlePrint}
+                            className="flex-1 py-2 bg-blue-800 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
+                            บันทึก PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
