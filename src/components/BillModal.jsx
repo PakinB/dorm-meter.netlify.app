@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import generatePayload from 'promptpay-qr'
 import QRCode from 'qrcode'
+import { toJpeg } from 'html-to-image'
+
 
 const MONTHS = [
     'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน',
@@ -35,6 +37,7 @@ function BillModal({ bill, info, onClose }) {
         <div class="bh">
           <h1>${info.dorm_name || 'หอพัก'}</h1>
           <p>${info.dorm_address || ''}</p>
+          <p>เบอร์โทร : 063-546-2928</p>
         </div>
         <div class="bm">
           <span>ห้อง <b>${bill.roomNumber}</b></span>
@@ -162,6 +165,26 @@ function BillModal({ bill, info, onClose }) {
         setTimeout(() => { win.print(); win.close() }, 600)
     }
 
+    async function handleDownloadJPG() {
+        try {
+            const element = billRef.current.querySelector('.bill')
+            if (!element) return
+
+            const dataUrl = await toJpeg(element, {
+                quality: 0.95,
+                backgroundColor: '#ffffff'
+            })
+
+            const link = document.createElement('a')
+            link.download = `bill${bill.roomNumber}.jpg`
+            link.href = dataUrl
+            link.click()
+
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
             onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -180,6 +203,7 @@ function BillModal({ bill, info, onClose }) {
                         <div className="bg-blue-800 text-white p-4">
                             <h1 className="text-base font-semibold">{info.dorm_name || 'หอพัก'}</h1>
                             <p className="text-xs text-blue-200 mt-0.5">{info.dorm_address}</p>
+                            <p className="text-xs text-blue-200 mt-0.5">เบอร์โทร : 063-546-2928</p>
                         </div>
 
                         <div className="flex justify-between items-center px-4 py-2 bg-slate-50 border-b text-xs text-slate-500">
@@ -254,6 +278,10 @@ function BillModal({ bill, info, onClose }) {
 
                 {/* Actions */}
                 <div className="flex gap-3 px-5 py-4 border-t">
+                    <button onClick={handleDownloadJPG}
+                        className="flex-1 py-2 bg-blue-800 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
+                        ดาวน์โหลดรูปภาพ
+                    </button>
                     <button onClick={handlePrint}
                         className="flex-1 py-2 border border-blue-800 text-blue-800 text-sm rounded-lg hover:bg-blue-50 font-medium">
                         ปริ้นใบบิล

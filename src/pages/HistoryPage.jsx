@@ -167,7 +167,7 @@ function HistoryPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-blue-800 text-white text-xs">
+                                <tr className="bg-blue-800 text-white text-xs whitespace-nowrap">
                                     <th className="text-left px-3 py-2">เดือน</th>
                                     <th className="text-right px-3 py-2">ค่าเช่า</th>
                                     <th className="text-right px-3 py-2">ส่วนกลาง</th>
@@ -186,7 +186,7 @@ function HistoryPage() {
                                 {rows.map((row, i) => (
                                     <tr key={`${row.year}-${row.month}`}
                                         style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
-                                        className="border-b hover:bg-blue-100 transition-colors"
+                                        className="border-b hover:bg-blue-100 transition-colors whitespace-nowrap"
                                     >
                                         <td className="px-3 py-2 font-semibold text-blue-900 whitespace-nowrap">
                                             {MONTHS[row.month - 1]} {row.year}
