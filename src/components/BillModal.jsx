@@ -179,7 +179,8 @@ function BillModal({ bill, info, onClose }) {
 
             const dataUrl = await toJpeg(element, {
                 quality: 0.95,
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                skipFonts: true
             })
 
             const link = document.createElement('a')
