@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import generatePayload from 'promptpay-qr'
 import QRCode from 'qrcode'
 import { toJpeg } from 'html-to-image'
+import { numberToThaiText } from '../hooks/bathText'
 
 
 const MONTHS = [
@@ -59,7 +60,13 @@ function BillModal({ bill, info, onClose }) {
         <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 8} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
         ${bill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevElec} → ใหม่ ${bill.newElec}</span></div>` : ''}
 
-        <div class="total"><span>รวมทั้งหมด</span><span>${bill.total.toLocaleString()} ฿</span></div>
+        <div class="total"><span>รวมทั้งหมด</span>
+            <div style="text-align:right;">
+                <div>${bill.total.toLocaleString()} ฿</div>
+                <div style="font-size:11px;color:#64748b;margin-top:2px;">
+                (${numberToThaiText(Number(bill.total))})
+            </div>
+        </div></div>
 
         <div class="ft">
           <div class="ft-text">
@@ -251,15 +258,28 @@ function BillModal({ bill, info, onClose }) {
                             <span>ค่าไฟ ({bill.usedElec ?? '?'} หน่วย × {info.elecRate ?? 8} ฿)</span>
                             <span className="font-medium">{bill.billElec?.toFixed(0) ?? '—'} ฿</span>
                         </div>
+
                         {bill.prevElec !== null && <p className="px-4 pb-1 text-xs text-slate-400 pl-8">มิเตอร์เก่า {bill.prevElec} - ใหม่ {bill.newElec}</p>}
 
+
                         <div className="flex justify-between mx-4 py-3 border-t-2 border-blue-800 text-blue-800 font-bold text-base mt-2">
+
                             <span>รวมทั้งหมด</span>
-                            <span>{bill.total.toLocaleString()} ฿</span>
+
+                            <div className="flex flex-col gap-1 items-end leading-none">
+                                <span>{bill.total.toLocaleString()} ฿</span>
+                                <span className="text-xs text-slate-500">
+                                    ({numberToThaiText(Number(bill.total))})
+                                </span>
+                            </div>
+
                         </div>
+
+
 
                         <div className="flex gap-3 items-center px-4 py-3 bg-slate-50 border-t">
                             <div className="flex-1 space-y-1">
+
                                 {info.bank_name && <p className="text-xs text-slate-500">ธนาคาร : {info.bank_name}</p>}
                                 {info.bank_number && <p className="text-xs text-slate-500">เลขที่บัญชี : {info.bank_number}</p>}
                                 {info.bank_account && <p className="text-xs text-slate-500">ชื่อบัญชี : {info.bank_account}</p>}
