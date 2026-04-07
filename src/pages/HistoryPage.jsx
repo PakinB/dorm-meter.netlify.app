@@ -9,7 +9,7 @@ const MONTHS = [
 
 
 function HistoryPage() {
-    const { waterRate, elecRate } = useRates()
+    const { waterRate, elecRate, loading: ratesLoading } = useRates()
     const [rooms, setRooms] = useState([])
     const [roomId, setRoomId] = useState(null)
     const [rows, setRows] = useState([])
@@ -27,8 +27,9 @@ function HistoryPage() {
     }
 
     useEffect(() => {
-        if (roomId) fetchHistory()
-    }, [roomId])
+        if (!roomId || ratesLoading) return
+        fetchHistory()
+    }, [roomId, waterRate, elecRate, ratesLoading])
 
     async function fetchHistory() {
         setLoading(true)
@@ -191,12 +192,12 @@ function HistoryPage() {
                                         <td className="px-3 py-2 font-semibold text-blue-900 whitespace-nowrap">
                                             {MONTHS[row.month - 1]} {row.year}
                                         </td>
-                                        <td className="px-3 py-2 text-right">{row.rent.toLocaleString()+ ' ฿'}</td>
+                                        <td className="px-3 py-2 text-right">{row.rent.toLocaleString() + ' ฿'}</td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.commonFee > 0 ? row.commonFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                            {row.commonFee > 0 ? row.commonFee.toLocaleString() + ' ฿' : '0' + ' ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.parkingFee > 0 ? row.parkingFee.toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                            {row.parkingFee > 0 ? row.parkingFee.toLocaleString() + ' ฿' : '0' + ' ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right text-slate-500">
                                             {row.waterMeter?.toLocaleString() ?? '0'}
@@ -205,7 +206,7 @@ function HistoryPage() {
                                             {row.usedWater?.toLocaleString() ?? '0'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.billWater ? Math.round(row.billWater).toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                            {row.billWater ? Math.round(row.billWater).toLocaleString() + ' ฿' : '0' + ' ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right text-slate-500">
                                             {row.elecMeter?.toLocaleString() ?? '0'}
@@ -214,7 +215,7 @@ function HistoryPage() {
                                             {row.usedElec?.toLocaleString() ?? '0'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.billElec ? Math.round(row.billElec).toLocaleString()+ ' ฿' : '0'+ ' ฿'}
+                                            {row.billElec ? Math.round(row.billElec).toLocaleString() + ' ฿' : '0' + ' ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right font-semibold text-blue-700">
                                             {row.total ? Math.round(row.total).toLocaleString() + ' ฿' : '0'}

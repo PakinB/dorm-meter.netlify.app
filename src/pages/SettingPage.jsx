@@ -38,19 +38,42 @@ function SettingsPage() {
 
   async function save() {
     setSaving(true)
-    const { error: e1 } = await supabase.from('settings')
-      .upsert({ key: 'water_rate', value: waterRate }, { onConflict: 'key' })
-    const { error: e2 } = await supabase.from('settings')
-      .upsert({ key: 'elec_rate', value: elecRate }, { onConflict: 'key' })
+
+    const { error: e1 } = await supabase
+      .from('settings')
+      .upsert({ key: 'water_rate', value: rates.waterRate }, { onConflict: 'key' })
+
+    const { error: e2 } = await supabase
+      .from('settings')
+      .upsert({ key: 'elec_rate', value: rates.elecRate }, { onConflict: 'key' })
+
+    let infoError = null
 
     for (const [key, value] of Object.entries(info)) {
-      await supabase.from('settings_text')
+      const { error } = await supabase
+        .from('settings_text')
         .upsert({ key, value }, { onConflict: 'key' })
+
+      if (error) {
+        infoError = error
+        break
+      }
     }
 
     setSaving(false)
-    showToast(e1 || e2 ? 'เกิดข้อผิดพลาด กรุณาลองใหม่' : 'บันทึกการตั้งค่าสำเร็จ', e1 || e2 ? 'error' : 'success')
+
+    const hasError = e1 || e2 || infoError
+
+    if (!hasError) {
+      window.dispatchEvent(new Event('rates-updated'))
+    }
+
+    showToast(
+      hasError ? 'เกิดข้อผิดพลาด กรุณาลองใหม่' : 'บันทึกการตั้งค่าสำเร็จ',
+      hasError ? 'error' : 'success'
+    )
   }
+
 
   if (loading) return <div className="text-sm text-slate-400 py-8 text-center">กำลังโหลด...</div>
 

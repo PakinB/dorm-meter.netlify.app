@@ -5,15 +5,16 @@ import { useRates } from '../hooks/useRates'
 const now = new Date()
 
 function SummaryPage() {
-    const { waterRate, elecRate } = useRates()
+    const { waterRate, elecRate, loading: ratesLoading } = useRates()
     const [month, setMonth] = useState(now.getMonth() + 1)
     const [year, setYear] = useState(now.getFullYear())
     const [rows, setRows] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        if (ratesLoading) return
         fetchSummary()
-    }, [month, year])
+    }, [month, year, waterRate, elecRate, ratesLoading])
 
     async function fetchSummary() {
         setLoading(true)

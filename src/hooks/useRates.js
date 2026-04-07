@@ -6,9 +6,22 @@ export function useRates() {
   const [elecRate,  setElecRate]  = useState(9)
   const [loading,   setLoading]   = useState(true)
 
-  useEffect(() => { fetchRates() }, [])
+  useEffect(() => {
+    fetchRates()
+
+    function handleRatesUpdated() {
+      fetchRates()
+    }
+
+    window.addEventListener('rates-updated', handleRatesUpdated)
+
+    return () => {
+      window.removeEventListener('rates-updated', handleRatesUpdated)
+    }
+  }, [])
 
   async function fetchRates() {
+    setLoading(true)
     const { data } = await supabase
       .from('settings')
       .select('key, value')
@@ -22,5 +35,5 @@ export function useRates() {
     setLoading(false)
   }
 
-  return { waterRate, elecRate, loading }
+  return { waterRate, elecRate, loading, refreshRates: fetchRates }
 }
