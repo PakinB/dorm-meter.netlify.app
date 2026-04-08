@@ -11,19 +11,29 @@ function App() {
   const [page, setPage] = useState('entry')
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-blue-800 text-white px-6 py-4 shadow">
-        <h1 className="text-lg font-semibold tracking-wide">ระบบจดมิเตอร์หอพัก</h1>
+    <div className="app-shell">
+      <div className="bg-gradient-to-r from-blue-950 via-blue-800 to-blue-700 text-white shadow-lg">
+        <div className="page-wrap py-5 sm:py-7">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200"></p>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">ระบบจดมิเตอร์หอพัก</h1>
+              <p className="mt-2 max-w-2xl text-sm text-blue-100 sm:text-base">
+                
+              </p>
+            </div>
+           
+          </div>
+        </div>
       </div>
 
-      {/* Navbar */}
-      <div className="bg-white border-b shadow-sm px-6 py-3">
-        <Navbar currentPage={page} onChangePage={setPage} />
+      <div className="page-wrap pt-4">
+        <div className="glass-panel rounded-[28px] p-3 sm:p-4">
+          <Navbar currentPage={page} onChangePage={setPage} />
+        </div>
       </div>
 
-      {/* Content — เพิ่ม mt-6 */}
-      <div className="max-w-5xl mx-auto px-6 py-6 mt-2">
+      <div className="page-wrap pb-8 pt-4">
         {page === 'entry' && <EntryPage />}
         {page === 'summary' && <SummaryPage />}
         {page === 'payment' && <PaymentPage />}

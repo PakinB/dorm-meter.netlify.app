@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+
 function formatNum(val) {
     if (val === '' || val === null || val === undefined) return ''
     return Number(val).toLocaleString()
@@ -18,7 +19,6 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
         setTimeout(() => setToast(null), 2500)
     }
 
-
     useEffect(() => { fetchMeterData() }, [month, year])
 
     async function fetchMeterData() {
@@ -26,7 +26,6 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
         const prevMonth = month === 1 ? 12 : month - 1
         const prevYear = month === 1 ? year - 1 : year
 
-        // ดึงเดือนก่อนตรงๆ ก่อน
         const { data: prevData } = await supabase
             .from('meter_readings')
             .select('water_meter, elec_meter')
@@ -39,7 +38,6 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
             setPrevWater(prevData.water_meter ?? '')
             setPrevElec(prevData.elec_meter ?? '')
         } else {
-            // หาข้อมูลล่าสุดที่มีก่อนเดือนนี้
             const { data: sameYearData } = await supabase
                 .from('meter_readings')
                 .select('water_meter, elec_meter')
@@ -66,7 +64,6 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
             setPrevElec(latest?.elec_meter ?? '')
         }
 
-        // ดึงข้อมูลเดือนนี้
         const { data: curData } = await supabase
             .from('meter_readings')
             .select('water_meter, elec_meter')
@@ -116,14 +113,12 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
         : null
 
     return (
-
         <div
-            style={{ backgroundColor: stripe ? '#eff6ff' : '#ffffff' }}
-            className="grid grid-cols-6 gap-2 px-4 py-2 border-b items-center hover:bg-blue-100 transition-colors"
+            style={{ backgroundColor: stripe ? '#f8fbff' : '#ffffff' }}
+            className="grid grid-cols-6 gap-3 items-center border-b border-blue-50 px-4 py-3 transition-colors hover:bg-blue-50 sm:px-6"
         >
-            <span className="text-sm font-semibold text-blue-900">ห้อง {roomNumber}</span>
+            <span className="text-base font-semibold text-blue-900">ห้อง {roomNumber}</span>
 
-            {/* น้ำ ก่อน */}
             <input
                 type="text"
                 value={prevWater !== '' ? formatNum(prevWater) : ''}
@@ -132,10 +127,9 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setPrevWater(raw); setSaved(false) }
                 }}
                 placeholder="—"
-                className="border border-slate-200 rounded-md px-2 py-1 text-sm w-full bg-slate-50 text-slate-500 focus:outline-none focus:border-blue-300"
+                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:outline-none focus:border-blue-300"
             />
 
-            {/* น้ำ ใหม่ */}
             <input
                 type="text"
                 value={newWater !== '' ? formatNum(newWater) : ''}
@@ -144,10 +138,9 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setNewWater(raw); setSaved(false) }
                 }}
                 placeholder="กรอก"
-                className="border border-slate-300 rounded-md px-2 py-1 text-sm w-full bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
+                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
-            {/* ไฟ ก่อน */}
             <input
                 type="text"
                 value={prevElec !== '' ? formatNum(prevElec) : ''}
@@ -156,10 +149,9 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setPrevElec(raw); setSaved(false) }
                 }}
                 placeholder="—"
-                className="border border-slate-200 rounded-md px-2 py-1 text-sm w-full bg-slate-50 text-slate-500 focus:outline-none focus:border-blue-300"
+                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:outline-none focus:border-blue-300"
             />
 
-            {/* ไฟ ใหม่ */}
             <input
                 type="text"
                 value={newElec !== '' ? formatNum(newElec) : ''}
@@ -168,37 +160,36 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setNewElec(raw); setSaved(false) }
                 }}
                 placeholder="กรอก"
-                className="border border-slate-300 rounded-md px-2 py-1 text-sm w-full bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
+                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
-            <div className="flex items-center gap-2 justify-between w-full whitespace-nowrap ">
-                <span className={`text-sm font-medium ${total !== null ? 'text-blue-700' : 'text-slate-300'}`}>
+            <div className="flex items-center justify-between gap-3 whitespace-nowrap">
+                <span className={`text-base font-bold ${total !== null ? 'text-blue-700' : 'text-slate-300'}`}>
                     {total !== null ? `${total.toLocaleString()} ฿` : '—'}
                 </span>
 
                 {saved ? (
-                    // บันทึกแล้ว — แสดง 2 ปุ่ม
-                    <div className="flex flex-wrap gap-1 justify-end">
-                        <span className="text-xs px-2 py-0.5 rounded-full border border-green-300 text-green-700 bg-green-50 whitespace-nowrap">
+                    <div className="flex flex-wrap justify-end gap-1">
+                        <span className="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-sm font-medium text-green-700 whitespace-nowrap">
                             บันทึกแล้ว
                         </span>
                         <button
                             onClick={() => setSaved(false)}
-                            className="text-xs px-2 py-0.5 rounded-full border border-orange-300 text-orange-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
+                            className="rounded-full border border-orange-300 px-3 py-1 text-sm font-medium text-orange-500 transition-colors hover:border-blue-400 hover:text-blue-600"
                         >
                             แก้ไข
                         </button>
                     </div>
                 ) : (
-                    // ยังไม่บันทึก — แสดงปุ่มบันทึก
                     <button
                         onClick={handleSave}
-                        className="text-xs px-2.5 py-1 rounded-full border border-blue-300 text-blue-600 hover:bg-blue-50 font-medium transition-colors whitespace-nowrap"
+                        className="rounded-full border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-700 transition-colors whitespace-nowrap hover:bg-blue-50"
                     >
                         บันทึก
                     </button>
                 )}
             </div>
+
             {toast && (
                 <div style={{
                     position: 'fixed',

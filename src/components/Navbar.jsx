@@ -1,23 +1,23 @@
 const TABS = [
-  { id: 'entry',    label: 'บันทึกมิเตอร์' },
-  { id: 'summary',  label: 'สรุปเดือน' },
-  { id: 'payment',  label: 'การชำระเงิน' },
-  { id: 'history',  label: 'ประวัติ' },
-  { id: 'roomcfg',  label: 'ตั้งค่าห้อง' },
+  { id: 'entry', label: 'บันทึกมิเตอร์' },
+  { id: 'summary', label: 'สรุปรายเดือน' },
+  { id: 'payment', label: 'การชำระเงิน' },
+  { id: 'history', label: 'ประวัติ' },
+  { id: 'roomcfg', label: 'ตั้งค่าห้อง' },
   { id: 'settings', label: 'ตั้งค่าทั่วไป' },
 ]
 
 function Navbar({ currentPage, onChangePage }) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
       {TABS.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChangePage(tab.id)}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+          className={`rounded-2xl px-4 py-3 text-sm font-semibold transition-all sm:px-5 ${
             currentPage === tab.id
-              ? 'bg-blue-700 text-white'
-              : 'text-slate-500 hover:text-blue-700 hover:bg-blue-50'
+              ? 'bg-blue-800 text-white shadow-md shadow-blue-900/20'
+              : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-800 hover:ring-blue-200'
           }`}
         >
           {tab.label}
