@@ -23,12 +23,16 @@ function EntryPage() {
     async function fetchRooms() {
         setLoading(true)
         const { data } = await supabase
-            .from('rooms').select('*').order('room_number')
+            .from('rooms')
+            .select('*')
+            .order('room_number')
         setRooms(data ?? [])
         setLoading(false)
     }
 
-    if (loading) return <div className="py-10 text-center text-base font-medium text-slate-500">กำลังโหลด...</div>
+    if (loading) {
+        return <div className="py-10 text-center text-base font-medium text-slate-500">กำลังโหลด...</div>
+    }
 
     return (
         <div className="space-y-4">
@@ -74,9 +78,14 @@ function EntryPage() {
 
             <div className="table-shell bg-white">
                 <div className="mobile-scroll overflow-x-auto">
-                    <div className="min-w-[880px]">
-                        <div className="grid grid-cols-6 gap-3 bg-blue-800 px-4 py-3 text-sm font-semibold text-white sm:px-6">
-                            <span>ห้อง</span>
+                    <div className="min-w-[980px]">
+                        <div
+                            className="grid gap-3 bg-blue-800 px-4 py-3 text-sm font-semibold text-white sm:px-6"
+                            style={{ gridTemplateColumns: '120px repeat(5, minmax(140px, 1fr))' }}
+                        >
+                            <div className="sticky left-0 z-30 flex items-center self-stretch border-r border-blue-700 bg-blue-800 px-4">
+                                <span>ห้อง</span>
+                            </div>
                             <span>น้ำ (ก่อน)</span>
                             <span>น้ำ (ใหม่)</span>
                             <span>ไฟ (ก่อน)</span>

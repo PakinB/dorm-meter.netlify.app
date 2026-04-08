@@ -189,72 +189,81 @@ function PaymentPage() {
                             <col style={{ width: '94px' }} />
                         </colgroup>
                         <thead>
-                            <tr className="bg-blue-800 text-white text-sm">
-                                <th className="text-left px-3 py-3">ห้อง</th>
-                                <th className="text-right px-3 py-3">ยอดรวม</th>
-                                <th className="text-center px-3 py-3">มิเตอร์</th>
-                                <th className="text-left px-3 py-3">หมายเหตุ</th>
-                                <th className="text-center px-3 py-3">วันที่จ่าย</th>
-                                <th className="text-center px-3 py-3">สถานะ</th>
-                                <th className="text-center px-3 py-3">ใบแจ้งหนี้</th>
+                            <tr className="bg-blue-800 text-sm text-white">
+                                <th className="sticky left-0 z-20 bg-blue-800 px-3 py-3 text-left shadow-[inset_-1px_0_0_#1d4ed8]">ห้อง</th>
+                                <th className="px-3 py-3 text-right">ยอดรวม</th>
+                                <th className="px-3 py-3 text-center">มิเตอร์</th>
+                                <th className="px-3 py-3 text-left">หมายเหตุ</th>
+                                <th className="px-3 py-3 text-center">วันที่จ่าย</th>
+                                <th className="px-3 py-3 text-center">สถานะ</th>
+                                <th className="px-3 py-3 text-center">ใบแจ้งหนี้</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {rows.map((row, i) => (
-                                <tr
-                                    key={row.roomId}
-                                    style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
-                                    className="border-b border-blue-50 transition-colors hover:bg-blue-50"
-                                >
-                                    <td className="px-3 py-3 font-semibold text-blue-900">{row.roomNumber}</td>
-                                    <td className="px-3 py-3 text-right">
-                                        <div className="font-semibold">{row.total.toLocaleString()} ฿</div>
-                                        {!row.hasMeter && <div className="text-xs text-amber-500">*ยังไม่มีข้อมูลมิเตอร์</div>}
-                                    </td>
-                                    <td className="px-3 py-3 text-center">
-                                        {row.hasMeter
-                                            ? <span className="text-sm font-medium text-green-600">✓ มีข้อมูล</span>
-                                            : <span className="text-sm text-slate-300">—</span>
-                                        }
-                                    </td>
-                                    <td className="px-3 py-3">
-                                        <input
-                                            type="text"
-                                            defaultValue={row.note}
-                                            onBlur={(e) => saveNote(row, e.target.value)}
-                                            placeholder="หมายเหตุ"
-                                            className="min-h-[40px] w-full rounded-xl border border-slate-200 px-3 text-sm focus:outline-none focus:border-blue-300"
-                                        />
-                                    </td>
-                                    <td className="px-3 py-3 text-center text-sm text-slate-500">
-                                        {row.paidAt
-                                            ? new Date(row.paidAt).toLocaleDateString('th-TH', {
-                                                day: 'numeric', month: 'short', year: '2-digit'
-                                            })
-                                            : '—'
-                                        }
-                                    </td>
-                                    <td className="px-3 py-3 text-center">
-                                        <button
-                                            onClick={() => togglePaid(row)}
-                                            className={`w-full rounded-full border px-3 py-2 text-sm font-semibold transition-colors ${row.paid
-                                                ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'
-                                                : 'border-amber-300 bg-white text-amber-500 hover:border-blue-400 hover:text-blue-600'
-                                                }`}
+                            {rows.map((row, i) => {
+                                const rowBackground = i % 2 === 1 ? '#eff6ff' : '#ffffff'
+
+                                return (
+                                    <tr
+                                        key={row.roomId}
+                                        style={{ backgroundColor: rowBackground }}
+                                        className="border-b border-blue-50 transition-colors hover:bg-blue-50"
+                                    >
+                                        <td
+                                            style={{ backgroundColor: rowBackground }}
+                                            className="sticky left-0 z-10 px-3 py-3 font-semibold text-blue-900 shadow-[inset_-1px_0_0_#dbeafe]"
                                         >
-                                            {row.paid ? '✓ จ่ายแล้ว' : 'ยังไม่จ่าย'}
-                                        </button>
-                                    </td>
-                                    <td className="px-3 py-3 text-center">
-                                        <button
-                                            onClick={() => openBill(row)}
-                                            className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium transition-colors hover:border-blue-400 hover:text-blue-600"
-                                        >
-                                            เปิดบิล
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                            {row.roomNumber}
+                                        </td>
+                                        <td className="px-3 py-3 text-right">
+                                            <div className="font-semibold">{row.total.toLocaleString()} ฿</div>
+                                            {!row.hasMeter && <div className="text-xs text-amber-500">*ยังไม่มีข้อมูลมิเตอร์</div>}
+                                        </td>
+                                        <td className="px-3 py-3 text-center">
+                                            {row.hasMeter
+                                                ? <span className="text-sm font-medium text-green-600">✓ มีข้อมูล</span>
+                                                : <span className="text-sm text-slate-300">—</span>
+                                            }
+                                        </td>
+                                        <td className="px-3 py-3">
+                                            <input
+                                                type="text"
+                                                defaultValue={row.note}
+                                                onBlur={(e) => saveNote(row, e.target.value)}
+                                                placeholder="หมายเหตุ"
+                                                className="min-h-[40px] w-full rounded-xl border border-slate-200 px-3 text-sm focus:border-blue-300 focus:outline-none"
+                                            />
+                                        </td>
+                                        <td className="px-3 py-3 text-center text-sm text-slate-500">
+                                            {row.paidAt
+                                                ? new Date(row.paidAt).toLocaleDateString('th-TH', {
+                                                    day: 'numeric', month: 'short', year: '2-digit'
+                                                })
+                                                : '—'
+                                            }
+                                        </td>
+                                        <td className="px-3 py-3 text-center">
+                                            <button
+                                                onClick={() => togglePaid(row)}
+                                                className={`w-full rounded-full border px-3 py-2 text-sm font-semibold transition-colors ${row.paid
+                                                    ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'
+                                                    : 'border-amber-300 bg-white text-amber-500 hover:border-blue-400 hover:text-blue-600'
+                                                    }`}
+                                            >
+                                                {row.paid ? '✓ จ่ายแล้ว' : 'ยังไม่จ่าย'}
+                                            </button>
+                                        </td>
+                                        <td className="px-3 py-3 text-center">
+                                            <button
+                                                onClick={() => openBill(row)}
+                                                className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium transition-colors hover:border-blue-400 hover:text-blue-600"
+                                            >
+                                                เปิดบิล
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 </div>

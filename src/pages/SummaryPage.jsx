@@ -159,7 +159,7 @@ function SummaryPage() {
                     <table className="min-w-[1100px] w-full text-sm">
                         <thead>
                             <tr className="bg-blue-800 text-sm font-semibold text-white whitespace-nowrap">
-                                <th className="px-4 py-3 text-left">ห้อง</th>
+                                <th className="sticky left-0 z-20 bg-blue-800 px-4 py-3 text-left shadow-[inset_-1px_0_0_#1d4ed8]">ห้อง</th>
                                 <th className="px-4 py-3 text-right">ค่าเช่า</th>
                                 <th className="px-4 py-3 text-right">ส่วนกลาง</th>
                                 <th className="px-4 py-3 text-right">ที่จอดรถ</th>
@@ -173,42 +173,51 @@ function SummaryPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {rows.map((row, i) => (
-                                <tr
-                                    key={row.roomNumber}
-                                    style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
-                                    className="border-b border-blue-50 whitespace-nowrap transition-colors hover:bg-blue-50"
-                                >
-                                    <td className="px-4 py-3 text-left text-base font-semibold text-blue-900">{row.roomNumber}</td>
-                                    <td className="px-4 py-3 text-right">{row.rent.toLocaleString()} ฿</td>
-                                    <td className="px-4 py-3 text-right">
-                                        {row.commonFee > 0 ? `${row.commonFee.toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-right">
-                                        {row.parkingFee > 0 ? `${row.parkingFee.toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-right">
-                                        {row.extraFee > 0 ? `${row.extraFee.toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-right">{row.usedWater?.toLocaleString() ?? '0'}</td>
-                                    <td className="px-4 py-3 text-right">
-                                        {row.billWater ? `${Math.round(row.billWater).toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-right">{row.usedElec?.toLocaleString() ?? '0'}</td>
-                                    <td className="px-4 py-3 text-right">
-                                        {row.billElec ? `${Math.round(row.billElec).toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-right text-base font-semibold text-blue-700">
-                                        {row.total ? `${Math.round(row.total).toLocaleString()} ฿` : '0 ฿'}
-                                    </td>
-                                    <td className="px-4 py-3 text-center">
-                                        {row.total !== null
-                                            ? <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-600">ครบ</span>
-                                            : <span className="rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-500">รอ</span>
-                                        }
-                                    </td>
-                                </tr>
-                            ))}
+                            {rows.map((row, i) => {
+                                const rowBackground = i % 2 === 1 ? '#eff6ff' : '#ffffff'
+
+                                return (
+                                    <tr
+                                        key={row.roomNumber}
+                                        style={{ backgroundColor: rowBackground }}
+                                        className="border-b border-blue-50 whitespace-nowrap transition-colors hover:bg-blue-50"
+                                    >
+                                        <td
+                                            style={{ backgroundColor: rowBackground }}
+                                            className="sticky left-0 z-10 px-4 py-3 text-left text-base font-semibold text-blue-900 shadow-[inset_-1px_0_0_#dbeafe]"
+                                        >
+                                            {row.roomNumber}
+                                        </td>
+                                        <td className="px-4 py-3 text-right">{row.rent.toLocaleString()} ฿</td>
+                                        <td className="px-4 py-3 text-right">
+                                            {row.commonFee > 0 ? `${row.commonFee.toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-right">
+                                            {row.parkingFee > 0 ? `${row.parkingFee.toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-right">
+                                            {row.extraFee > 0 ? `${row.extraFee.toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-right">{row.usedWater?.toLocaleString() ?? '0'}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            {row.billWater ? `${Math.round(row.billWater).toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-right">{row.usedElec?.toLocaleString() ?? '0'}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            {row.billElec ? `${Math.round(row.billElec).toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-right text-base font-semibold text-blue-700">
+                                            {row.total ? `${Math.round(row.total).toLocaleString()} ฿` : '0 ฿'}
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            {row.total !== null
+                                                ? <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-600">ครบ</span>
+                                                : <span className="rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-500">รอ</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 </div>

@@ -51,12 +51,12 @@ function BillModal({ bill, info, onClose }) {
         ${bill.extraFee > 0 ? `<div class="row"><span>ค่าอื่นๆ</span><span>${bill.extraFee.toLocaleString()} ฿</span></div>` : ''}
 
         <div class="sl">ค่าน้ำ</div>
-        <div class="row"><span>ค่าน้ำ (${bill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 18} ฿)</span><span>${bill.billWater?.toFixed(0) ?? '0'} ฿</span></div>
-        ${bill.prevWater !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevWater} → ใหม่ ${bill.newWater}</span></div>` : ''}
+        <div class="row"><span>ค่าน้ำ (${bill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 35} ฿)</span><span>${bill.billWater?.toFixed(0) ?? '0'} ฿</span></div>
+        ${bill.prevWater !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevWater.toLocaleString()} → ใหม่ ${bill.newWater.toLocaleString()}</span></div>` : ''}
 
         <div class="sl">ค่าไฟ</div>
-        <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 8} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
-        ${bill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevElec} → ใหม่ ${bill.newElec}</span></div>` : ''}
+        <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 9} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
+        ${bill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevElec.toLocaleString()} → ใหม่ ${bill.newElec.toLocaleString()}</span></div>` : ''}
 
         <div class="total"><span>รวมทั้งหมด</span>
             <div style="text-align:right;">
@@ -223,23 +223,23 @@ function BillModal({ bill, info, onClose }) {
 
                         <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">ค่าน้ำ</p>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
-                            <span className="whitespace-nowrap">ค่าน้ำ ({bill.usedWater ?? '?'} หน่วย × {info.waterRate ?? 18} ฿)</span>
+                            <span className="whitespace-nowrap">ค่าน้ำ ({bill.usedWater ?? '?'} หน่วย × {info.waterRate ?? 35} ฿)</span>
                             <span className="whitespace-nowrap font-medium">{bill.billWater?.toFixed(0) ?? '—'} ฿</span>
                         </div>
                         {bill.prevWater !== null && (
                             <p className="whitespace-nowrap px-4 pb-1 pl-8 text-xs text-slate-400">
-                                มิเตอร์เก่า {bill.prevWater} - ใหม่ {bill.newWater}
+                                มิเตอร์เก่า {bill.prevWater.toLocaleString()} - ใหม่ {bill.newWater.toLocaleString()}
                             </p>
                         )}
 
                         <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">ค่าไฟ</p>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
-                            <span className="whitespace-nowrap">ค่าไฟ ({bill.usedElec ?? '?'} หน่วย × {info.elecRate ?? 8} ฿)</span>
+                            <span className="whitespace-nowrap">ค่าไฟ ({bill.usedElec ?? '?'} หน่วย × {info.elecRate ?? 9} ฿)</span>
                             <span className="whitespace-nowrap font-medium">{bill.billElec?.toFixed(0) ?? '—'} ฿</span>
                         </div>
                         {bill.prevElec !== null && (
                             <p className="whitespace-nowrap px-4 pb-1 pl-8 text-xs text-slate-400">
-                                มิเตอร์เก่า {bill.prevElec} - ใหม่ {bill.newElec}
+                                มิเตอร์เก่า {bill.prevElec.toLocaleString()} - ใหม่ {bill.newElec.toLocaleString()}
                             </p>
                         )}
 

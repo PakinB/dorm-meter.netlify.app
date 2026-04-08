@@ -112,12 +112,22 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
         ? usedWater * waterRate + usedElec * elecRate
         : null
 
+    const rowBackground = stripe ? '#f8fbff' : '#ffffff'
+
     return (
         <div
-            style={{ backgroundColor: stripe ? '#f8fbff' : '#ffffff' }}
-            className="grid grid-cols-6 gap-3 items-center border-b border-blue-50 px-4 py-3 transition-colors hover:bg-blue-50 sm:px-6"
+            style={{
+                backgroundColor: rowBackground,
+                gridTemplateColumns: '120px repeat(5, minmax(140px, 1fr))',
+            }}
+            className="grid gap-3 items-center border-b border-blue-50 px-4 py-3 transition-colors hover:bg-blue-50 sm:px-6"
         >
-            <span className="text-base font-semibold text-blue-900">ห้อง {roomNumber}</span>
+            <div
+                style={{ backgroundColor: rowBackground }}
+                className="sticky left-0 z-10 flex min-h-[48px] items-center self-stretch border-r border-blue-100 px-4"
+            >
+                <span className="text-base font-semibold text-blue-900">ห้อง {roomNumber}</span>
+            </div>
 
             <input
                 type="text"
@@ -127,7 +137,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setPrevWater(raw); setSaved(false) }
                 }}
                 placeholder="—"
-                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:outline-none focus:border-blue-300"
+                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:border-blue-300 focus:outline-none"
             />
 
             <input
@@ -138,7 +148,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setNewWater(raw); setSaved(false) }
                 }}
                 placeholder="กรอก"
-                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
             />
 
             <input
@@ -149,7 +159,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setPrevElec(raw); setSaved(false) }
                 }}
                 placeholder="—"
-                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:outline-none focus:border-blue-300"
+                className="min-h-[48px] w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-base text-slate-600 focus:border-blue-300 focus:outline-none"
             />
 
             <input
@@ -160,7 +170,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                     if (!isNaN(raw)) { setNewElec(raw); setSaved(false) }
                 }}
                 placeholder="กรอก"
-                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="min-h-[48px] w-full rounded-xl border border-slate-300 bg-white px-3 text-base focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
             />
 
             <div className="flex items-center justify-between gap-3 whitespace-nowrap">
@@ -170,7 +180,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
 
                 {saved ? (
                     <div className="flex flex-wrap justify-end gap-1">
-                        <span className="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-sm font-medium text-green-700 whitespace-nowrap">
+                        <span className="whitespace-nowrap rounded-full border border-green-300 bg-green-50 px-3 py-1 text-sm font-medium text-green-700">
                             บันทึกแล้ว
                         </span>
                         <button
@@ -183,7 +193,7 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
                 ) : (
                     <button
                         onClick={handleSave}
-                        className="rounded-full border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-700 transition-colors whitespace-nowrap hover:bg-blue-50"
+                        className="rounded-full bg-blue-800 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                     >
                         บันทึก
                     </button>
@@ -191,35 +201,30 @@ function RoomRow({ roomId, roomNumber, month, year, stripe, waterRate, elecRate 
             </div>
 
             {toast && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: '24px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 20px',
-                    borderRadius: '999px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                    background: toast.type === 'success' ? '#1e3a8a' : '#dc2626',
-                    color: 'white',
-                    animation: 'slideUp 0.2s ease',
-                }}>
+                <div
+                    style={{
+                        position: 'fixed',
+                        bottom: '24px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        zIndex: 9999,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '10px 20px',
+                        borderRadius: '999px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        whiteSpace: 'nowrap',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                        background: toast.type === 'success' ? '#1e3a8a' : '#dc2626',
+                        color: 'white',
+                        animation: 'slideUp 0.2s ease',
+                    }}
+                >
                     {toast.type === 'success' ? '✓' : '✕'} {toast.msg}
                 </div>
             )}
-
-            <style>{`
-            @keyframes slideUp {
-                from { opacity: 0; transform: translateX(-50%) translateY(12px); }
-                to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-            }
-            `}</style>
         </div>
     )
 }
