@@ -69,13 +69,7 @@ function BillModal({ bill, info, onClose }) {
         </div></div>
 
         <div class="ft">
-          <div class="ft-text">
-            ${info.promptpay ? `<p>🙏🙏 รบกวนโอน</p>` : ''}
-            ${info.bank_name ? `<p>ธนาคาร : ${info.bank_name}</p>` : ''}
-            ${info.bank_number ? `<p>เลขที่บัญชี : ${info.bank_number}</p>` : ''}
-            ${info.bank_account ? `<p>ชื่อบัญชี : ${info.bank_account}</p>` : ''}
-            ${info.promptpay ? `<p>ขอบคุณค่ะ 🙏🙏</p>` : ''}
-            </div>
+        
           
         </div>
       </div>
@@ -275,14 +269,14 @@ function BillModal({ bill, info, onClose }) {
 
 
                         <div className="flex gap-3 items-center px-4 py-3 bg-slate-50 border-t">
-                            <div className="flex-1 space-y-1">
+                            {/* <div className="flex-1 space-y-1">
 
                                 {info.bank_name && <p className="text-xs text-slate-500">🙏🙏 รบกวนโอน</p>}
                                 {info.bank_name && <p className="text-xs text-slate-500">ธนาคาร : {info.bank_name}</p>}
                                 {info.bank_number && <p className="text-xs text-slate-500">เลขที่บัญชี : {info.bank_number}</p>}
                                 {info.bank_account && <p className="text-xs text-slate-500">ชื่อบัญชี : {info.bank_account}</p>}
                                 {info.promptpay && <p className="text-xs text-slate-500">ขอบคุณค่ะ 🙏🙏</p>}
-                            </div>
+                            </div> */}
                             {/* {qrUrl && (
                                 <div className="text-center flex-shrink-0">
                                     <p className="text-xs text-slate-500 mt-1 font-medium">จ่ายแบบรวดเร็ว</p>

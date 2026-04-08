@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRates } from '../hooks/useRates'
+
 const MONTHS = [
     'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน',
     'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม',
     'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
 ]
-
 
 function HistoryPage() {
     const { waterRate, elecRate, loading: ratesLoading } = useRates()
@@ -47,7 +47,11 @@ function HistoryPage() {
             .order('year', { ascending: false })
             .order('month', { ascending: false })
 
-        if (!data?.length) { setRows([]); setLoading(false); return }
+        if (!data?.length) {
+            setRows([])
+            setLoading(false)
+            return
+        }
 
         const { data: payments } = await supabase
             .from('payments')
@@ -58,7 +62,7 @@ function HistoryPage() {
             const prevMonth = cur.month === 1 ? 12 : cur.month - 1
             const prevYear = cur.month === 1 ? cur.year - 1 : cur.year
 
-            // ดึงเดือนก่อนตรงๆ ก่อน
+            // ดึงเดือนก่อนตรง ๆ ก่อน
             const { data: prevData } = await supabase
                 .from('meter_readings')
                 .select('water_meter, elec_meter')
@@ -105,15 +109,20 @@ function HistoryPage() {
             const pay = payments?.find((p) => p.month === cur.month && p.year === cur.year)
 
             return {
-                month: cur.month, year: cur.year,
+                month: cur.month,
+                year: cur.year,
                 waterMeter: cur.water_meter,
                 elecMeter: cur.elec_meter,
-                usedWater, usedElec, billWater, billElec,
+                usedWater,
+                usedElec,
+                billWater,
+                billElec,
                 total,
                 hasFullData: billWater !== null,
                 rent: roomData?.rent ?? 0,
                 commonFee: roomData?.common_fee ?? 0,
                 parkingFee: roomData?.parking_fee ?? 0,
+                extraFee: roomData?.extra_fee ?? 0,
                 paid: pay?.paid ?? false,
                 paidAt: pay?.paid_at ?? null,
             }
@@ -127,8 +136,6 @@ function HistoryPage() {
 
     return (
         <div className="space-y-4">
-
-            {/* Room picker */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
                 <p className="text-xs text-slate-400 font-medium mb-3">เลือกห้อง</p>
                 <div className="flex flex-wrap gap-2">
@@ -147,9 +154,7 @@ function HistoryPage() {
                 </div>
             </div>
 
-            {/* History table */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                {/* Card header */}
                 <div className="px-5 py-3 border-b bg-slate-50">
                     <p className="text-sm font-medium text-slate-600">
                         ประวัติห้อง {selectedRoom?.room_number}
@@ -173,6 +178,7 @@ function HistoryPage() {
                                     <th className="text-right px-3 py-2">ค่าเช่า</th>
                                     <th className="text-right px-3 py-2">ส่วนกลาง</th>
                                     <th className="text-right px-3 py-2">ที่จอดรถ</th>
+                                    <th className="text-right px-3 py-2">ค่าอื่นๆ</th>
                                     <th className="text-right px-3 py-2">มิเตอร์น้ำ</th>
                                     <th className="text-right px-3 py-2">น้ำ (หน่วยใช้)</th>
                                     <th className="text-right px-3 py-2">ค่าน้ำ</th>
@@ -185,7 +191,8 @@ function HistoryPage() {
                             </thead>
                             <tbody>
                                 {rows.map((row, i) => (
-                                    <tr key={`${row.year}-${row.month}`}
+                                    <tr
+                                        key={`${row.year}-${row.month}`}
                                         style={{ backgroundColor: i % 2 === 1 ? '#eff6ff' : '#ffffff' }}
                                         className="border-b hover:bg-blue-100 transition-colors whitespace-nowrap"
                                     >
@@ -194,10 +201,13 @@ function HistoryPage() {
                                         </td>
                                         <td className="px-3 py-2 text-right">{row.rent.toLocaleString() + ' ฿'}</td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.commonFee > 0 ? row.commonFee.toLocaleString() + ' ฿' : '0' + ' ฿'}
+                                            {row.commonFee > 0 ? row.commonFee.toLocaleString() + ' ฿' : '0 ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.parkingFee > 0 ? row.parkingFee.toLocaleString() + ' ฿' : '0' + ' ฿'}
+                                            {row.parkingFee > 0 ? row.parkingFee.toLocaleString() + ' ฿' : '0 ฿'}
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            {row.extraFee > 0 ? row.extraFee.toLocaleString() + ' ฿' : '0 ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right text-slate-500">
                                             {row.waterMeter?.toLocaleString() ?? '0'}
@@ -206,7 +216,7 @@ function HistoryPage() {
                                             {row.usedWater?.toLocaleString() ?? '0'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.billWater ? Math.round(row.billWater).toLocaleString() + ' ฿' : '0' + ' ฿'}
+                                            {row.billWater ? Math.round(row.billWater).toLocaleString() + ' ฿' : '0 ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right text-slate-500">
                                             {row.elecMeter?.toLocaleString() ?? '0'}
@@ -215,7 +225,7 @@ function HistoryPage() {
                                             {row.usedElec?.toLocaleString() ?? '0'}
                                         </td>
                                         <td className="px-3 py-2 text-right">
-                                            {row.billElec ? Math.round(row.billElec).toLocaleString() + ' ฿' : '0' + ' ฿'}
+                                            {row.billElec ? Math.round(row.billElec).toLocaleString() + ' ฿' : '0 ฿'}
                                         </td>
                                         <td className="px-3 py-2 text-right font-semibold text-blue-700">
                                             {row.total ? Math.round(row.total).toLocaleString() + ' ฿' : '0'}
