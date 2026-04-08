@@ -43,28 +43,38 @@ function EntryPage() {
                 </div>
             </div>
 
+            <div className="soft-card px-4 py-4 sm:px-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <span className="text-base font-semibold text-slate-700">เลือกเดือนที่ต้องการบันทึก</span>
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                        <select
+                            value={month}
+                            onChange={(e) => setMonth(+e.target.value)}
+                            className="input-comfort w-full min-w-[180px]"
+                        >
+                            {MONTHS.map((name, i) => (
+                                <option key={i + 1} value={i + 1}>{name}</option>
+                            ))}
+                        </select>
+                        <select
+                            value={year}
+                            onChange={(e) => setYear(+e.target.value)}
+                            className="input-comfort w-full min-w-[140px]"
+                        >
+                            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i).map((y) => (
+                                <option key={y} value={y}>{y}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-800 ring-1 ring-blue-100 sm:ml-auto">
+                        {rooms.length} ห้อง
+                    </span>
+                </div>
+            </div>
+
             <div className="table-shell bg-white">
                 <div className="mobile-scroll overflow-x-auto">
                     <div className="min-w-[880px]">
-                        <div className="flex flex-col gap-3 border-b bg-blue-50/70 px-4 py-4 sm:flex-row sm:items-center sm:px-6">
-                            <span className="text-base font-semibold text-slate-700">เดือนที่ต้องการบันทึก</span>
-                            <div className="flex flex-col gap-3 sm:flex-row">
-                                <select value={month} onChange={(e) => setMonth(+e.target.value)}
-                                    className="input-comfort w-full min-w-[170px]">
-                                    {MONTHS.map((name, i) => (
-                                        <option key={i + 1} value={i + 1}>{name}</option>
-                                    ))}
-                                </select>
-                                <select value={year} onChange={(e) => setYear(+e.target.value)}
-                                    className="input-comfort w-full min-w-[130px]">
-                                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i).map((y) => (
-                                        <option key={y} value={y}>{y}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-800 ring-1 ring-blue-100 sm:ml-auto">{rooms.length} ห้อง</span>
-                        </div>
-
                         <div className="grid grid-cols-6 gap-3 bg-blue-800 px-4 py-3 text-sm font-semibold text-white sm:px-6">
                             <span>ห้อง</span>
                             <span>น้ำ (ก่อน)</span>
