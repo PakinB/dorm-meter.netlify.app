@@ -14,17 +14,32 @@ function BillModal({ bill, info, onClose }) {
     const billRef = useRef()
     const [qrUrl, setQrUrl] = useState('')
 
+    const safeBill = {
+        ...bill,
+        rent: Number(bill?.rent ?? 0),
+        commonFee: Number(bill?.commonFee ?? 0),
+        parkingFee: Number(bill?.parkingFee ?? 0),
+        extraFee: Number(bill?.extraFee ?? 0),
+        total: Number(bill?.total ?? 0),
+        billWater: bill?.billWater == null ? null : Number(bill.billWater),
+        billElec: bill?.billElec == null ? null : Number(bill.billElec),
+        prevWater: bill?.prevWater == null ? null : Number(bill.prevWater),
+        newWater: bill?.newWater == null ? null : Number(bill.newWater),
+        prevElec: bill?.prevElec == null ? null : Number(bill.prevElec),
+        newElec: bill?.newElec == null ? null : Number(bill.newElec),
+    }
+
     useEffect(() => {
         if (info.promptpay) {
             try {
-                const payload = generatePayload(info.promptpay, { amount: bill.total })
+                const payload = generatePayload(info.promptpay, { amount: safeBill.total })
                 QRCode.toDataURL(payload, { width: 200, margin: 1 })
                     .then((url) => setQrUrl(url))
             } catch (e) {
                 console.error('QR error:', e)
             }
         }
-    }, [info.promptpay, bill.total])
+    }, [info.promptpay, safeBill.total])
 
     useEffect(() => {
         document.body.style.overflow = 'hidden'
@@ -40,29 +55,29 @@ function BillModal({ bill, info, onClose }) {
           <p>เบอร์โทร : 063-546-2928</p>
         </div>
         <div class="bm">
-          <span>ห้อง <b>${bill.roomNumber}</b></span>
-          <span>ประจำเดือน <b>${MONTHS[bill.month - 1]} ${bill.year}</b></span>
+          <span>ห้อง <b>${safeBill.roomNumber}</b></span>
+          <span>ประจำเดือน <b>${MONTHS[safeBill.month - 1]} ${safeBill.year}</b></span>
         </div>
 
         <div class="sl">ค่าใช้จ่ายคงที่</div>
-        <div class="row"><span>ค่าเช่าห้อง</span><span>${bill.rent.toLocaleString()} ฿</span></div>
-        <div class="row"><span>ค่าส่วนกลาง</span><span>${bill.commonFee > 0 ? bill.commonFee.toLocaleString() + ' ฿' : '0 ฿'}</span></div>
-        <div class="row"><span>ค่าที่จอดรถ</span><span>${bill.parkingFee > 0 ? bill.parkingFee.toLocaleString() + ' ฿' : '0 ฿'}</span></div>
-        ${bill.extraFee > 0 ? `<div class="row"><span>ค่าอื่นๆ</span><span>${bill.extraFee.toLocaleString()} ฿</span></div>` : ''}
+        <div class="row"><span>ค่าเช่าห้อง</span><span>${safeBill.rent.toLocaleString()} ฿</span></div>
+        <div class="row"><span>ค่าส่วนกลาง</span><span>${safeBill.commonFee > 0 ? safeBill.commonFee.toLocaleString() + ' ฿' : '0 ฿'}</span></div>
+        <div class="row"><span>ค่าที่จอดรถ</span><span>${safeBill.parkingFee > 0 ? safeBill.parkingFee.toLocaleString() + ' ฿' : '0 ฿'}</span></div>
+        ${safeBill.extraFee > 0 ? `<div class="row"><span>ค่าอื่นๆ</span><span>${safeBill.extraFee.toLocaleString()} ฿</span></div>` : ''}
 
         <div class="sl">ค่าน้ำ</div>
-        <div class="row"><span>ค่าน้ำ (${bill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 35} ฿)</span><span>${bill.billWater?.toFixed(0) ?? '0'} ฿</span></div>
-        ${bill.prevWater !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevWater.toLocaleString()} → ใหม่ ${bill.newWater.toLocaleString()}</span></div>` : ''}
+        <div class="row"><span>ค่าน้ำ (${safeBill.usedWater ?? '?'} หน่วย × ${info.waterRate ?? 35} ฿)</span><span>${safeBill.billWater?.toFixed(0) ?? '0'} ฿</span></div>
+        ${safeBill.prevWater !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${safeBill.prevWater.toLocaleString()} → ใหม่ ${safeBill.newWater?.toLocaleString() ?? '0'}</span></div>` : ''}
 
         <div class="sl">ค่าไฟ</div>
-        <div class="row"><span>ค่าไฟ (${bill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 9} ฿)</span><span>${bill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
-        ${bill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${bill.prevElec.toLocaleString()} → ใหม่ ${bill.newElec.toLocaleString()}</span></div>` : ''}
+        <div class="row"><span>ค่าไฟ (${safeBill.usedElec ?? '?'} หน่วย × ${info.elecRate ?? 9} ฿)</span><span>${safeBill.billElec?.toFixed(0) ?? '0'} ฿</span></div>
+        ${safeBill.prevElec !== null ? `<div class="row sub"><span>มิเตอร์เก่า ${safeBill.prevElec.toLocaleString()} → ใหม่ ${safeBill.newElec?.toLocaleString() ?? '0'}</span></div>` : ''}
 
         <div class="total"><span>รวมทั้งหมด</span>
             <div style="text-align:right;">
-                <div style="white-space:nowrap;">${bill.total.toLocaleString()} ฿</div>
+                <div style="white-space:nowrap;">${safeBill.total.toLocaleString()} ฿</div>
                 <div style="font-size:11px;color:#64748b;margin-top:2px;white-space:nowrap;">
-                (${numberToThaiText(Number(bill.total))})
+                (${numberToThaiText(Number(safeBill.total))})
             </div>
         </div></div>
 
@@ -77,7 +92,7 @@ function BillModal({ bill, info, onClose }) {
         win.document.write(`
       <html><head>
       <meta charset="utf-8">
-      <title>ใบบิล ห้อง ${bill.roomNumber}</title>
+      <title>ใบบิล ห้อง ${safeBill.roomNumber}</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -143,7 +158,7 @@ function BillModal({ bill, info, onClose }) {
       <body>
         <div class="page">
           <div class="half">${billHTML}</div>
-          <div class="cut-line"><div class="cut-label">✂ ตัดตรงนี้</div></div>
+          <div class="cut-line"><div class="cut-label">ตัดตรงนี้</div></div>
           <div class="half">${billHTML}</div>
         </div>
       </body></html>
@@ -165,7 +180,7 @@ function BillModal({ bill, info, onClose }) {
             })
 
             const link = document.createElement('a')
-            link.download = `bill${bill.roomNumber}.jpg`
+            link.download = `bill${safeBill.roomNumber}.jpg`
             link.href = dataUrl
             link.click()
         } catch (err) {
@@ -180,7 +195,7 @@ function BillModal({ bill, info, onClose }) {
         >
             <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl">
                 <div className="flex items-center justify-between border-b px-5 py-4">
-                    <h2 className="font-semibold text-slate-700">ใบแจ้ง ห้อง {bill.roomNumber}</h2>
+                    <h2 className="font-semibold text-slate-700">ใบแจ้ง ห้อง {safeBill.roomNumber}</h2>
                     <button onClick={onClose} className="text-xl leading-none text-slate-400 hover:text-slate-600">✕</button>
                 </div>
 
@@ -193,53 +208,53 @@ function BillModal({ bill, info, onClose }) {
                         </div>
 
                         <div className="flex items-center justify-between border-b bg-slate-50 px-4 py-2 text-xs text-slate-500">
-                            <span className="whitespace-nowrap">ห้อง <span className="font-semibold text-slate-700">{bill.roomNumber}</span></span>
-                            <span className="whitespace-nowrap">ประจำเดือน <span className="font-semibold text-slate-700">{MONTHS[bill.month - 1]} {bill.year}</span></span>
+                            <span className="whitespace-nowrap">ห้อง <span className="font-semibold text-slate-700">{safeBill.roomNumber}</span></span>
+                            <span className="whitespace-nowrap">ประจำเดือน <span className="font-semibold text-slate-700">{MONTHS[safeBill.month - 1]} {safeBill.year}</span></span>
                         </div>
 
                         <p className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wider text-slate-400">ค่าใช้จ่ายคงที่</p>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
                             <span className="whitespace-nowrap">ค่าเช่าห้อง</span>
-                            <span className="whitespace-nowrap font-medium">{bill.rent.toLocaleString()} ฿</span>
+                            <span className="whitespace-nowrap font-medium">{safeBill.rent.toLocaleString()} ฿</span>
                         </div>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
                             <span className="whitespace-nowrap">ค่าส่วนกลาง</span>
                             <span className="whitespace-nowrap font-medium">
-                                {bill.commonFee > 0 ? `${bill.commonFee.toLocaleString()} ฿` : '0 ฿'}
+                                {safeBill.commonFee > 0 ? `${safeBill.commonFee.toLocaleString()} ฿` : '0 ฿'}
                             </span>
                         </div>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
                             <span className="whitespace-nowrap">ค่าที่จอดรถ</span>
                             <span className="whitespace-nowrap font-medium">
-                                {bill.parkingFee > 0 ? `${bill.parkingFee.toLocaleString()} ฿` : '0 ฿'}
+                                {safeBill.parkingFee > 0 ? `${safeBill.parkingFee.toLocaleString()} ฿` : '0 ฿'}
                             </span>
                         </div>
-                        {bill.extraFee > 0 && (
+                        {safeBill.extraFee > 0 && (
                             <div className="flex justify-between gap-3 px-4 py-1 text-sm">
                                 <span className="whitespace-nowrap">ค่าอื่นๆ</span>
-                                <span className="whitespace-nowrap font-medium">{bill.extraFee.toLocaleString()} ฿</span>
+                                <span className="whitespace-nowrap font-medium">{safeBill.extraFee.toLocaleString()} ฿</span>
                             </div>
                         )}
 
                         <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">ค่าน้ำ</p>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
-                            <span className="whitespace-nowrap">ค่าน้ำ ({bill.usedWater ?? '?'} หน่วย × {info.waterRate ?? 35} ฿)</span>
-                            <span className="whitespace-nowrap font-medium">{bill.billWater?.toFixed(0) ?? '—'} ฿</span>
+                            <span className="whitespace-nowrap">ค่าน้ำ ({safeBill.usedWater ?? '?'} หน่วย × {info.waterRate ?? 35} ฿)</span>
+                            <span className="whitespace-nowrap font-medium">{safeBill.billWater?.toFixed(0) ?? '—'} ฿</span>
                         </div>
-                        {bill.prevWater !== null && (
+                        {safeBill.prevWater !== null && (
                             <p className="whitespace-nowrap px-4 pb-1 pl-8 text-xs text-slate-400">
-                                มิเตอร์เก่า {bill.prevWater.toLocaleString()} - ใหม่ {bill.newWater.toLocaleString()}
+                                มิเตอร์เก่า {safeBill.prevWater.toLocaleString()} - ใหม่ {safeBill.newWater?.toLocaleString() ?? '0'}
                             </p>
                         )}
 
                         <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">ค่าไฟ</p>
                         <div className="flex justify-between gap-3 px-4 py-1 text-sm">
-                            <span className="whitespace-nowrap">ค่าไฟ ({bill.usedElec ?? '?'} หน่วย × {info.elecRate ?? 9} ฿)</span>
-                            <span className="whitespace-nowrap font-medium">{bill.billElec?.toFixed(0) ?? '—'} ฿</span>
+                            <span className="whitespace-nowrap">ค่าไฟ ({safeBill.usedElec ?? '?'} หน่วย × {info.elecRate ?? 9} ฿)</span>
+                            <span className="whitespace-nowrap font-medium">{safeBill.billElec?.toFixed(0) ?? '—'} ฿</span>
                         </div>
-                        {bill.prevElec !== null && (
+                        {safeBill.prevElec !== null && (
                             <p className="whitespace-nowrap px-4 pb-1 pl-8 text-xs text-slate-400">
-                                มิเตอร์เก่า {bill.prevElec.toLocaleString()} - ใหม่ {bill.newElec.toLocaleString()}
+                                มิเตอร์เก่า {safeBill.prevElec.toLocaleString()} - ใหม่ {safeBill.newElec?.toLocaleString() ?? '0'}
                             </p>
                         )}
 
@@ -247,9 +262,9 @@ function BillModal({ bill, info, onClose }) {
                             <span className="whitespace-nowrap">รวมทั้งหมด</span>
 
                             <div className="flex flex-col items-end gap-1 leading-none">
-                                <span className="whitespace-nowrap">{bill.total.toLocaleString()} ฿</span>
+                                <span className="whitespace-nowrap">{safeBill.total.toLocaleString()} ฿</span>
                                 <span className="whitespace-nowrap text-xs text-slate-500">
-                                    ({numberToThaiText(Number(bill.total))})
+                                    ({numberToThaiText(Number(safeBill.total))})
                                 </span>
                             </div>
                         </div>
