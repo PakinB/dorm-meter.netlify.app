@@ -195,7 +195,7 @@ function BillModal({ bill, info, onClose }) {
         >
             <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl">
                 <div className="flex items-center justify-between border-b px-5 py-4">
-                    <h2 className="font-semibold text-slate-700">ใบแจ้ง ห้อง {safeBill.roomNumber}</h2>
+                    <h2 className="font-semibold text-slate-700">บิลค่าห้อง {safeBill.roomNumber}</h2>
                     <button onClick={onClose} className="text-xl leading-none text-slate-400 hover:text-slate-600">✕</button>
                 </div>
 
